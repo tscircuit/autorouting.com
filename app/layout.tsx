@@ -9,7 +9,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <title>Next.js App</title>
+        <title>autorouting.com</title>
       </head>
       <body>{children}</body>
     </html>
