@@ -3,9 +3,9 @@
   "module": "index.ts",
   "type": "module",
   "scripts": {
+    "start": "npm run dev",
     "dev": "next dev",
-    "build": "next build",
-    "start": "next start"
+    "build": "next build"
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",
