@@ -1,1 +1,1 @@
-console.log("Hello via Bun!");
+// This file is not used in a typical Next.js project
