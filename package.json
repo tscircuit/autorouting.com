@@ -1,7 +1,6 @@
 {
   "name": "autorouting.com",
   "module": "index.ts",
-  "type": "module",
   "scripts": {
     "start": "npm run dev",
     "dev": "next dev",
