@@ -18,6 +18,9 @@
     "module": "preserve",
     "noEmit": true,
     "baseUrl": ".",
+    "paths": {
+      "@/*": ["./*"]
+    },
     // Include the DOM types
     "lib": [
       "es2022",
