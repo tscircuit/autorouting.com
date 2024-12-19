@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
-import { Code, Database, Route } from "lucide-react"
+import { Code, Database, Route, Upload, UploadCloud } from "lucide-react"
 
 export function Header() {
   const pathname = usePathname()
@@ -50,7 +50,19 @@ export function Header() {
             Autorouters
           </Link>
           <Link
-            href="/about"
+            href="/contribute"
+            className={cn(
+              "flex items-center text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/contribute"
+                ? "text-primary"
+                : "text-muted-foreground",
+            )}
+          >
+            <UploadCloud className="w-4 h-4 mr-1 text-gray-500" />
+            Contribute
+          </Link>
+          <Link
+            href="https://blog.autorouting.com/p/why-were-building-autoroutingcom"
             className={cn(
               "text-sm font-medium transition-colors hover:text-primary",
               pathname === "/about" ? "text-primary" : "text-muted-foreground",
