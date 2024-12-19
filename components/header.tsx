@@ -9,13 +9,11 @@ export function Header() {
 
   return (
     <header className="border-b">
-      <div className="container flex h-16 items-center px-4">
+      <div className="container flex h-16 items-center px-4 mx-auto">
         <Link href="/" className="flex items-center space-x-2">
-          <div className="bg-blue-500 text-white p-2 rounded-lg">
-            <span className="text-2xl font-bold">ar</span>
-          </div>
-          <span className="text-xl font-bold">autorouting</span>
+          <span className="text-xl font-bold">autorouting.com</span>
         </Link>
+        <div className="flex-1" />
         <nav className="ml-8 flex space-x-6">
           <Link
             href="/datasets"
@@ -36,6 +34,15 @@ export function Header() {
             )}
           >
             Models
+          </Link>
+          <Link
+            href="/about"
+            className={cn(
+              "text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/about" ? "text-primary" : "text-muted-foreground",
+            )}
+          >
+            About
           </Link>
         </nav>
       </div>
