@@ -4,15 +4,18 @@ import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
 import { Code, Database, Route, Upload, UploadCloud } from "lucide-react"
+import ardot from "/images/ardot.svg"
+import Image from "next/image.js"
 
 export function Header() {
   const pathname = usePathname()
 
   return (
     <header className="border-b">
-      <div className="container flex h-16 items-center px-4 mx-auto">
+      <div className="container flex h-16 items-center mx-auto">
         <Link href="/" className="flex items-center space-x-2">
-          <span className="text-xl font-bold">autorouting.com</span>
+          <Image alt="autorouting text logo" src={ardot} className="w-8" />
+          <span className="text-md">autorouting</span>
         </Link>
         <div className="flex-1" />
         <nav className="ml-8 flex space-x-6">
