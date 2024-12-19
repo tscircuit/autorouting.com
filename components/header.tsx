@@ -3,6 +3,7 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
+import { Code, Database, Route } from "lucide-react"
 
 export function Header() {
   const pathname = usePathname()
@@ -16,24 +17,37 @@ export function Header() {
         <div className="flex-1" />
         <nav className="ml-8 flex space-x-6">
           <Link
-            href="/datasets"
+            href="https://blog.autorouting.com"
             className={cn(
               "text-sm font-medium transition-colors hover:text-primary",
+              "text-muted-foreground",
+            )}
+          >
+            Blog
+          </Link>
+          <Link
+            href="/datasets"
+            className={cn(
+              "flex items-center text-sm font-medium transition-colors hover:text-primary",
               pathname === "/datasets"
                 ? "text-primary"
                 : "text-muted-foreground",
             )}
           >
+            <Database className="w-4 h-4 mr-1 text-gray-500" />
             Datasets
           </Link>
           <Link
-            href="/models"
+            href="/autorouters"
             className={cn(
-              "text-sm font-medium transition-colors hover:text-primary",
-              pathname === "/models" ? "text-primary" : "text-muted-foreground",
+              "flex items-center text-sm font-medium transition-colors hover:text-primary",
+              pathname === "/autorouters"
+                ? "text-primary"
+                : "text-muted-foreground",
             )}
           >
-            Models
+            <Route className="w-4 h-4 mr-1 text-gray-500" />
+            Autorouters
           </Link>
           <Link
             href="/about"
