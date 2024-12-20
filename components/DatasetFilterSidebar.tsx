@@ -33,6 +33,8 @@ export const DatasetFilterSidebar = () => {
   return (
     <div className="hidden md:block w-[300px] min-h-screen bg-gray-100 border-r border-r-gray-200 p-4">
       <div className="space-y-6">
+        <ToggleFilter label="Difficulty" options={["Any", "Easy", "Hard"]} />
+
         <ToggleFilter
           label="Trace Count"
           options={["Any", "<100", "100-1k", "1k+"]}
