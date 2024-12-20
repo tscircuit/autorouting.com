@@ -10,6 +10,7 @@ export const seedDatabase = (db: DbClient) => {
     median_trace_count: 10,
     max_layer_count: 2,
     created_at: new Date().toISOString(),
+    star_count: 0,
   })
   db.datasets.push({
     dataset_id: "dataset-2",
@@ -20,5 +21,6 @@ export const seedDatabase = (db: DbClient) => {
     median_trace_count: 5,
     max_layer_count: 1,
     created_at: new Date().toISOString(),
+    star_count: 0,
   })
 }
