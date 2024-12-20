@@ -56,10 +56,11 @@ export const autorouterRunResultSchema = z.object({
   tscircuit_checks_passing: z.boolean(),
 
   runner_system: z.object({
-    operating_system: z.string(),
+    operating_system: z.string().optional(),
     cloud_provider: z.string().optional(),
-    cpus: z.number(),
-    memory_gb: z.number(),
+    cpus: z.number().optional(),
+    memory_gb: z.number().optional(),
+    cluster_name: z.string().optional(),
   }),
 
   created_at: z.string().datetime(),
@@ -71,6 +72,8 @@ export const databaseSchema = z.object({
   datasets: z.array(datasetSchema).default([]),
   samples: z.array(sampleSchema).default([]),
   sample_files: z.array(sampleFileSchema).default([]),
+  autorouters: z.array(autorouterSchema).default([]),
+  autorouter_run_results: z.array(autorouterRunResultSchema).default([]),
 })
 
 export type DatabaseSchema = z.infer<typeof databaseSchema>
