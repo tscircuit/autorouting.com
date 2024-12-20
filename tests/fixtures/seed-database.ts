@@ -4,7 +4,6 @@ import databaseSeedJson from "./seed-database.generated.json"
 
 export const seedDatabase = async (db: DbClient) => {
   const copiedSeed = JSON.parse(JSON.stringify(databaseSeedJson))
-  console.log("DB DATASETS LENGTH", db.datasets.length)
   db.datasets.push(...copiedSeed.datasets)
   db.samples.push(...copiedSeed.samples)
   db.sample_files.push(...copiedSeed.sample_files)
