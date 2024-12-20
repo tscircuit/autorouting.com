@@ -1,10 +1,12 @@
 import type { Dataset } from "@/api/lib/db/schema"
+import { SampleThumbnail } from "@/components/SampleThumbnail"
 import { Button } from "@/components/ui/button"
 import { getBaseApiUrl, ky } from "@/lib/ky"
 import { range } from "@/lib/utils/range"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { useState } from "react"
 import Markdown from "react-markdown"
 
 interface DatasetPageProps {
@@ -39,29 +41,25 @@ export default async function DatasetPage({ params }: DatasetPageProps) {
         </Link>
         {dataset.dataset_name_with_owner}
       </h1>
-      <div className="flex gap-4">
-        <div className="flex flex-col gap-2">
+      <div className="text-xs my-4">
+        <h2 className="text-lg font-bold mb-2">Description</h2>
+        {dataset.description_md ? (
           <Markdown>{dataset.description_md}</Markdown>
-        </div>
-        <div className="flex flex-col gap-2">
-          <h2 className="text-lg font-bold">Samples</h2>
-          <div className="flex flex-wrap gap-2">
-            {range(1, dataset.sample_count).map((i) => (
-              <div
-                key={i}
-                className="border flex flex-col overflow-hidden hover:cursor-pointer hover:opacity-80"
-              >
-                <div className="text-xs px-1 py-0.5">Sample {i}</div>
-                <img
-                  key={i}
-                  width={200}
-                  height={200}
-                  src={`${getBaseApiUrl()}/samples/view_file?dataset_id=${dataset.dataset_id}&sample_number=${i}&file_path=pcb.svg`}
-                  alt={`Sample ${i}`}
-                />
-              </div>
-            ))}
-          </div>
+        ) : (
+          <span className="text-muted-foreground">No Description Provided</span>
+        )}
+      </div>
+      <div className="flex flex-col gap-2">
+        <h2 className="text-lg font-bold">Samples</h2>
+        <div className="flex flex-wrap gap-2">
+          {range(1, dataset.sample_count).map((i) => (
+            <SampleThumbnail
+              key={i}
+              dataset_id={dataset.dataset_id}
+              dataset_name_with_owner={dataset.dataset_name_with_owner}
+              sample_number={i}
+            />
+          ))}
         </div>
       </div>
     </div>

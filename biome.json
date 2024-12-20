@@ -31,6 +31,9 @@
       "complexity": {
         "noBannedTypes": "off"
       },
+      "a11y": {
+        "useKeyWithClickEvents": "off"
+      },
       "style": {
         "noNonNullAssertion": "off",
         "useFilenamingConvention": {

@@ -69,10 +69,10 @@ export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {
     })
 
     const filesToInsert = {
-      "circuit.json": circuitJson,
-      "unsolved_routes.dsn": dsnString,
-      "pcb.svg": pcbSvg,
-      "simple_route.json": simpleRouteJson,
+      "unrouted_circuit.json": circuitJson,
+      "unrouted.dsn": dsnString,
+      "unrouted_pcb.svg": pcbSvg,
+      "unrouted_simple_route.json": simpleRouteJson,
     }
 
     for (const [filename, content] of Object.entries(filesToInsert)) {

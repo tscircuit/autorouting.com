@@ -24,6 +24,9 @@ export const sampleSchema = z.object({
   sample_id: z.string(),
   dataset_id: z.string(),
   sample_number: z.number(),
+
+  available_file_paths: z.array(z.string()).optional(),
+
   created_at: z.string().datetime(),
 })
 export type Sample = z.infer<typeof sampleSchema>

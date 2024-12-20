@@ -50,15 +50,19 @@ export default withRouteSpec({
     })
   }
 
+  const dataset = ctx.db
+    .getState()
+    .datasets.find((d) => d.dataset_id === sample.dataset_id)!
+
   // Return the raw file content with appropriate headers
   const headers: Record<string, string> = {
     "Content-Type": sample_file.mimetype,
   }
 
   if (req.commonParams.download) {
-    headers["Content-Disposition"] = `attachment; filename="${file_path
-      .split("/")
-      .pop()}"`
+    headers["Content-Disposition"] = `attachment; filename="${
+      dataset.dataset_name
+    }-sample${sample.sample_number}-${file_path.split("/").pop()}"`
   }
 
   return new Response(sample_file.text_content, { headers })

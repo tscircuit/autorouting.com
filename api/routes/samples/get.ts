@@ -35,10 +35,15 @@ export default withRouteSpec({
 
   if (!sample) {
     return ctx.error(404, {
-      error_code: "sample_not_found", 
+      error_code: "sample_not_found",
       message: `Sample not found: dataset=${dataset_id} number=${sample_number}`,
     })
   }
 
-  return ctx.json({ sample })
+  const available_file_paths = ctx.db
+    .getState()
+    .sample_files.filter((f) => f.sample_id === sample.sample_id)
+    .map((f) => f.file_path)
+
+  return ctx.json({ sample: { ...sample, available_file_paths } })
 })
