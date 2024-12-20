@@ -10,23 +10,26 @@ import { notFound } from "next/navigation"
 import { useState } from "react"
 import Markdown from "react-markdown"
 
+export const dynamic = "force-dynamic"
+
 interface DatasetPageProps {
-  params: {
+  params: Promise<{
     author_name: string
     dataset_name: string
-  }
+  }>
 }
 
 export default async function DatasetPage({ params }: DatasetPageProps) {
   // TODO: Fetch dataset info and validate it exists
-  if (!params.author_name || !params.dataset_name) {
+  const { author_name, dataset_name } = await params
+  if (!author_name || !dataset_name) {
     notFound()
   }
 
   const { dataset } = await ky
     .get<{ dataset: Dataset }>("datasets/get", {
       searchParams: {
-        dataset_name_with_owner: `${params.author_name}/${params.dataset_name}`,
+        dataset_name_with_owner: `${author_name}/${dataset_name}`,
       },
     })
     .json()

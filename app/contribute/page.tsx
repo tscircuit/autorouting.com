@@ -19,6 +19,8 @@ import {
 import Link from "next/link"
 import { useState } from "react"
 
+export const dynamic = "force-dynamic"
+
 interface Dataset {
   id: string
   name: string

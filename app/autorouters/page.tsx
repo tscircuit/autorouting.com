@@ -4,6 +4,8 @@ import { ky } from "@/lib/ky"
 import type { Autorouter, autorouterSchema } from "@/api/lib/db/schema.js"
 import type { z } from "zod"
 
+export const dynamic = "force-dynamic"
+
 export default async function AutoroutersPage() {
   const { autorouters } = await ky
     .get<{

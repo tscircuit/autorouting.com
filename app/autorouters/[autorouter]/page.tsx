@@ -1,12 +1,18 @@
 import { notFound } from "next/navigation"
 
+export const dynamic = "force-dynamic"
+
 interface AutorouterPageProps {
-  params: {
+  params: Promise<{
     autorouter: string
-  }
+  }>
 }
 
-export default function AutorouterPage({ params }: AutorouterPageProps) {
+export default async function AutorouterPage({
+  params: $params,
+}: AutorouterPageProps) {
+  const params = await $params
+
   if (!params.autorouter) {
     notFound()
   }
