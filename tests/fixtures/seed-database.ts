@@ -49,7 +49,7 @@ export const seedDatabase = async (db: DbClient) => {
     created_at: new Date().toISOString(),
   })
 
-  for (let i = 0; i < 4; i++) {
+  for (let i = 0; i < 3; i++) {
     const { circuitJson, dsnString, pcbSvg, schematicSvg, simpleRouteJson } =
       await createSample("keyboard", i + 1)
     db.samples.push({
