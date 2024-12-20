@@ -3,16 +3,20 @@ import { Request as EdgeRuntimeRequest } from "@edge-runtime/primitives"
 import { join } from "node:path"
 import type { Middleware } from "winterspec"
 import { createDatabase } from "@/api/lib/db/db-client"
+import { getSeedDatabase } from "@/api/lib/db/seed"
 
 export const startServer = async ({
   port,
   testDbName,
-}: { port: number; testDbName: string }) => {
+}: {
+  port: number
+  testDbName: string
+}) => {
   const winterspecBundle = await createWinterSpecBundleFromDir(
-    join(import.meta.dir, "../../api/routes"),
+    join(import.meta.dir, "../../api/routes")
   )
 
-  const db = createDatabase()
+  const db = createDatabase(getSeedDatabase())
 
   const middleware: Middleware[] = [
     async (req: any, ctx: any, next: any) => {

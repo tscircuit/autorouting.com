@@ -4,11 +4,15 @@ import { hoist, type HoistedStoreApi } from "zustand-hoist"
 
 import { databaseSchema, type DatabaseSchema } from "./schema"
 import { combine } from "zustand/middleware"
+import type { z } from "zod"
 
-export const createDatabase = () => {
-  return hoist(createStore(initializer))
+export const createDatabase = (
+  initialState: z.input<typeof databaseSchema>
+) => {
+  return hoist(createStore(getInitializer(initialState)))
 }
 
 export type DbClient = ReturnType<typeof createDatabase>
 
-const initializer = combine(databaseSchema.parse({}), (set) => ({}))
+const getInitializer = (initialState: z.input<typeof databaseSchema>) =>
+  combine(databaseSchema.parse(initialState), (set) => ({}))

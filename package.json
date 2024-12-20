@@ -6,6 +6,7 @@
     "start": "concurrently \"npm run start:next\" \"npm run start:api\"",
     "start:next": "next dev -p 3090",
     "start:api": "winterspec dev --port 3091",
+    "generate:seed": "bun run scripts/generate-seed-database.ts",
     "generate:types": "winterspec codegen route-types -o lib/route-types.generated.ts",
     "dev": "next dev",
     "build": "next build"
@@ -69,6 +70,7 @@
     "date-fns": "^4.1.0",
     "dsn-converter": "^0.0.50",
     "embla-carousel-react": "^8.5.1",
+    "immer": "^10.1.1",
     "input-otp": "^1.4.1",
     "ky": "^1.7.4",
     "lucide-react": "^0.468.0",
