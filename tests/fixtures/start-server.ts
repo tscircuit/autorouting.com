@@ -36,5 +36,5 @@ export const startServer = async ({
     port,
   })
 
-  return server
+  return { server, db }
 }

@@ -18,7 +18,10 @@ export default withRouteSpec({
     .datasets.find((d) => d.dataset_id === dataset_id)
 
   if (!dataset) {
-    throw new Error(`Dataset not found: ${dataset_id}`)
+    return ctx.error(404, {
+      error_code: "dataset_not_found",
+      message: `Dataset not found: ${dataset_id}`,
+    })
   }
 
   return ctx.json({ dataset })
