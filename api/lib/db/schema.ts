@@ -39,6 +39,13 @@ export const autorouterSchema = z.object({
 
   autorouter_name: z.string(),
 
+  version: z.string().optional(),
+
+  description_md: z.string(),
+
+  github_url: z.string().url().optional(),
+  website_url: z.string().url().optional(),
+
   license_type: z.enum(["MIT", "GPL", "Proprietary"]),
   license_url: z.string().url().optional(),
 
