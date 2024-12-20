@@ -36,11 +36,10 @@ export const createSample = async (
 ) => {
   const circuitJson = await createSampleCircuitJson(circuitType, sampleNum)
 
-  const schematicSvg = convertCircuitJsonToSchematicSvg(circuitJson)
   const pcbSvg = convertCircuitJsonToPcbSvg(circuitJson)
 
   const simpleRouteJson = await getSimpleRouteJson(circuitJson)
   const dsnString = convertCircuitJsonToDsnString(circuitJson)
 
-  return { circuitJson, schematicSvg, pcbSvg, simpleRouteJson, dsnString }
+  return { circuitJson, pcbSvg, simpleRouteJson, dsnString }
 }

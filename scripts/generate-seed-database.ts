@@ -59,7 +59,7 @@ export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {
   })
 
   for (let i = 0; i < 3; i++) {
-    const { circuitJson, dsnString, pcbSvg, schematicSvg, simpleRouteJson } =
+    const { circuitJson, dsnString, pcbSvg, simpleRouteJson } =
       await createSample("keyboard", i + 1)
     db.samples.push({
       sample_id: `sample-${i + 1}`,
@@ -72,7 +72,6 @@ export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {
       "circuit.json": circuitJson,
       "unsolved_routes.dsn": dsnString,
       "pcb.svg": pcbSvg,
-      "schematic.svg": schematicSvg,
       "simple_route.json": simpleRouteJson,
     }
 
