@@ -16,6 +16,7 @@ export const datasetSchema = z.object({
   updated_at: z.string().datetime().optional(),
   created_at: z.string().datetime(),
 })
+export type Dataset = z.infer<typeof datasetSchema>
 
 export const sampleSchema = z.object({
   sample_id: z.string(),
@@ -23,6 +24,7 @@ export const sampleSchema = z.object({
   sample_number: z.number(),
   created_at: z.string().datetime(),
 })
+export type Sample = z.infer<typeof sampleSchema>
 
 export const sampleFileSchema = z.object({
   sample_file_id: z.string(),
@@ -35,6 +37,7 @@ export const sampleFileSchema = z.object({
 
   created_at: z.string().datetime(),
 })
+export type SampleFile = z.infer<typeof sampleFileSchema>
 
 export const autorouterSchema = z.object({
   autorouter_id: z.string(),
@@ -53,6 +56,7 @@ export const autorouterSchema = z.object({
 
   created_at: z.string().datetime(),
 })
+export type Autorouter = z.infer<typeof autorouterSchema>
 
 export const autorouterRunResultSchema = z.object({
   autorouter_run_result_id: z.string(),
@@ -74,6 +78,7 @@ export const autorouterRunResultSchema = z.object({
 
   created_at: z.string().datetime(),
 })
+export type AutorouterRunResult = z.infer<typeof autorouterRunResultSchema>
 
 export const databaseSchema = z.object({
   id_counter: z.number().default(0),

@@ -1,15 +1,16 @@
 import { Input } from "@/components/ui/input"
 import { AutorouterMiniCard } from "@/components/AutorouterMiniCard"
 import { ky } from "@/lib/ky"
-import type { autorouterSchema } from "@/api/lib/db/schema.js"
+import type { Autorouter, autorouterSchema } from "@/api/lib/db/schema.js"
 import type { z } from "zod"
 
 export default async function AutoroutersPage() {
   const { autorouters } = await ky
     .get<{
-      autorouters: z.infer<typeof autorouterSchema>
+      autorouters: Autorouter[]
     }>("autorouters/list")
     .json()
+
   return (
     <div className="flex">
       <div className="flex flex-col flex-grow">
@@ -22,7 +23,10 @@ export default async function AutoroutersPage() {
         </div>
         <div className="px-2">
           {autorouters.map((autorouter) => (
-            <AutorouterMiniCard key={autorouter.id} autorouter={autorouter} />
+            <AutorouterMiniCard
+              key={autorouter.autorouter_id}
+              autorouter={autorouter}
+            />
           ))}
         </div>
       </div>

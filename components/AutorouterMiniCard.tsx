@@ -2,27 +2,33 @@
 
 import { Card } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { CircuitBoard, Star } from "lucide-react"
+import { CircuitBoard, Scale, Star } from "lucide-react"
+import type { Autorouter } from "@/api/lib/db/schema.js"
+import Markdown from "react-markdown"
 
-export function AutorouterMiniCard() {
+export function AutorouterMiniCard({ autorouter }: { autorouter: Autorouter }) {
   return (
-    <Card className="p-4 mb-4">
+    <Card className="p-4 mb-4 rounded-md hover:cursor-pointer hover:bg-gray-100">
       <div className="flex items-start gap-4">
         <div className="flex-grow">
           <div className="flex items-center gap-2 mb-2">
-            <h3 className="font-semibold">Neural Autorouter v1</h3>
-            <Badge variant="outline" className="text-xs">
-              Neural Network
-            </Badge>
+            <h3 className="font-semibold">{autorouter.autorouter_name}</h3>
+            {autorouter.version && (
+              <Badge variant="outline" className="text-xs">
+                {autorouter.version}
+              </Badge>
+            )}
           </div>
           <p className="text-sm text-gray-600 mb-2">
-            A deep learning based autorouter trained on professional PCB designs
+            <Markdown>{autorouter.description_md}</Markdown>
           </p>
           <div className="flex items-center gap-2 text-sm text-gray-500">
             <CircuitBoard className="w-4 h-4" />
-            <span>98% completion rate</span>
+            <span>??% Overall Completion</span>
             <Star className="w-4 h-4 ml-2" />
-            <span>4.5/5 rating</span>
+            <span>0</span>
+            <Scale className="w-4 h-4 ml-2" />
+            <span>{autorouter.license_type}</span>
           </div>
         </div>
       </div>
