@@ -1,5 +1,13 @@
-import React from "react"
-import '../styles/globals.css'
+import { Inter } from "next/font/google"
+import "@/styles/globals.css"
+import { Header } from "@/components/header"
+
+const inter = Inter({ subsets: ["latin"] })
+
+export const metadata = {
+  title: "Autorouting - PCB Datasets and Models",
+  description: "Browse and download PCB autorouting datasets and models",
+}
 
 export default function RootLayout({
   children,
@@ -8,10 +16,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <head>
-        <title>autorouting.com</title>
-      </head>
-      <body>{children}</body>
+      <body className={inter.className}>
+        <Header />
+        {children}
+      </body>
     </html>
-  );
+  )
 }
