@@ -1,7 +1,6 @@
 "use client"
 
 import { Input } from "@/components/ui/input"
-import { AutorouterFilterSidebar } from "@/components/AutorouterFilterSidebar"
 import { AutorouterMiniCard } from "@/components/AutorouterMiniCard"
 
 export default function AutoroutersPage() {

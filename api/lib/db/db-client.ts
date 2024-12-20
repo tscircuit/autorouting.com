@@ -2,7 +2,7 @@ import { createStore, type StoreApi } from "zustand/vanilla"
 import { immer } from "zustand/middleware/immer"
 import { hoist, type HoistedStoreApi } from "zustand-hoist"
 
-import { databaseSchema, type DatabaseSchema, type Thing } from "./schema"
+import { databaseSchema, type DatabaseSchema } from "./schema"
 import { combine } from "zustand/middleware"
 
 export const createDatabase = () => {
@@ -11,14 +11,4 @@ export const createDatabase = () => {
 
 export type DbClient = ReturnType<typeof createDatabase>
 
-const initializer = combine(databaseSchema.parse({}), (set) => ({
-  addThing: (thing: Omit<Thing, "thing_id">) => {
-    set((state) => ({
-      things: [
-        ...state.things,
-        { ...thing, thing_id: state.idCounter.toString() },
-      ],
-      idCounter: state.idCounter + 1,
-    }))
-  },
-}))
+const initializer = combine(databaseSchema.parse({}), (set) => ({}))
