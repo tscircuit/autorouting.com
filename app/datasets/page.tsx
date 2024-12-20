@@ -1,11 +1,15 @@
-"use client"
-
 import { DatasetFilterSidebar } from "@/components/DatasetFilterSidebar"
 import { DatasetMiniCard } from "@/components/DatasetMiniCard"
 import { Input } from "@/components/ui/input"
 import { Database, Star } from "lucide-react"
+import { ky } from "@/lib/ky"
+import type { Dataset } from "@/api/lib/db/schema"
 
-export default function DatasetsPage() {
+export default async function DatasetsPage() {
+  const { datasets } = await ky
+    .get<{ datasets: Dataset[] }>("datasets/list")
+    .json()
+
   return (
     <div className="flex">
       <DatasetFilterSidebar />
@@ -18,7 +22,9 @@ export default function DatasetsPage() {
           <Input className="max-w-64" placeholder="Search datasets" />
         </div>
         <div className="px-2">
-          <DatasetMiniCard />
+          {datasets.map((dataset) => (
+            <DatasetMiniCard key={dataset.dataset_id} dataset={dataset} />
+          ))}
         </div>
       </div>
     </div>

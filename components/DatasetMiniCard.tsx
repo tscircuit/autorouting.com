@@ -1,16 +1,28 @@
 import { Database, Star } from "lucide-react"
+import type { Dataset } from "@/api/lib/db/schema"
+import TimeAgo from "javascript-time-ago"
+import en from "javascript-time-ago/locale/en"
 
-export const DatasetMiniCard = () => {
+TimeAgo.addDefaultLocale(en)
+
+const timeAgo = new TimeAgo("en-US")
+
+export const DatasetMiniCard = ({ dataset }: { dataset: Dataset }) => {
   return (
     <div className="p-2 flex flex-col border border-b-gray-200 m-2 rounded-md hover:cursor-pointer hover:bg-gray-100">
       <div className="flex items-center">
         <Database className="w-4 h-4 mr-1 text-gray-500" />
-        <div className="text-sm text-gray-700">seveibar/keyboard</div>
+        <div className="text-sm text-gray-700">
+          {dataset.dataset_name_with_owner}
+        </div>
       </div>
       <div className="flex text-xs mt-1 items-center">
-        <div className="text-gray-500">1,000+ Samples</div>
+        <div className="text-gray-500">{dataset.sample_count} Samples</div>
         <div className="bg-gray-300 rounded-xl w-1 h-1 ml-1 mr-1" />
-        <div className="text-gray-500">Updated 10 days ago</div>
+        <div className="text-gray-500">
+          Updated{" "}
+          {timeAgo.format(new Date(dataset.updated_at ?? dataset.created_at))}
+        </div>
         <div className="bg-gray-300 rounded-xl w-1 h-1 ml-1 mr-1" />
         <div className="text-gray-500 flex items-center">
           <Star className="w-2 h-2 mr-0.5" />5
