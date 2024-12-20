@@ -1,15 +1,14 @@
 import { Database, Star } from "lucide-react"
 import type { Dataset } from "@/api/lib/db/schema"
-import TimeAgo from "javascript-time-ago"
-import en from "javascript-time-ago/locale/en"
-
-TimeAgo.addDefaultLocale(en)
-
-const timeAgo = new TimeAgo("en-US")
+import { timeAgo } from "@/lib/utils/time-ago"
+import Link from "next/link"
 
 export const DatasetMiniCard = ({ dataset }: { dataset: Dataset }) => {
   return (
-    <div className="p-2 flex flex-col border border-b-gray-200 m-2 rounded-md hover:cursor-pointer hover:bg-gray-100">
+    <Link
+      href={`/datasets/${dataset.dataset_name_with_owner}`}
+      className="p-2 flex flex-col border border-b-gray-200 m-2 rounded-md hover:cursor-pointer hover:bg-gray-100"
+    >
       <div className="flex items-center">
         <Database className="w-4 h-4 mr-1 text-gray-500" />
         <div className="text-sm text-gray-700">
@@ -28,6 +27,6 @@ export const DatasetMiniCard = ({ dataset }: { dataset: Dataset }) => {
           <Star className="w-2 h-2 mr-0.5" />5
         </div>
       </div>
-    </div>
+    </Link>
   )
 }
