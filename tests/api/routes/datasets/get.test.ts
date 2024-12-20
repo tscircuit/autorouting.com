@@ -25,7 +25,7 @@ it("GET /datasets/get", async () => {
     "dataset_id": "dataset-1",
     "dataset_name": "custom-keyboards",
     "dataset_name_with_owner": "testuser/custom-keyboards",
-    "max_layer_count": 10,
+    "max_layer_count": 2,
     "median_trace_count": 10,
     "owner_name": "testuser",
     "sample_count": 1,
