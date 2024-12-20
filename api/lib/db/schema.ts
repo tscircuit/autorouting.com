@@ -11,6 +11,7 @@ export const datasetSchema = z.object({
   sample_count: z.number(),
   median_trace_count: z.number(),
   max_layer_count: z.number(),
+  star_count: z.number().optional().default(0),
 
   updated_at: z.string().datetime().optional(),
   created_at: z.string().datetime(),

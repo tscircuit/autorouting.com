@@ -29,6 +29,7 @@ it("GET /datasets/get", async () => {
     "median_trace_count": 10,
     "owner_name": "testuser",
     "sample_count": 1,
+    "star_count": 0,
   },
 }
 `)

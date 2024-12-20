@@ -18,6 +18,7 @@ it("GET /datasets/list", async () => {
       "median_trace_count": 10,
       "owner_name": "testuser",
       "sample_count": 1,
+      "star_count": 0,
     },
     {
       "created_at": "[timestamp]",
@@ -28,6 +29,7 @@ it("GET /datasets/list", async () => {
       "median_trace_count": 5,
       "owner_name": "testuser",
       "sample_count": 3,
+      "star_count": 0,
     },
     {
       "created_at": "[timestamp]",
@@ -38,6 +40,7 @@ it("GET /datasets/list", async () => {
       "median_trace_count": 10,
       "owner_name": "testuser",
       "sample_count": 1,
+      "star_count": 0,
     },
     {
       "created_at": "[timestamp]",
@@ -48,6 +51,7 @@ it("GET /datasets/list", async () => {
       "median_trace_count": 5,
       "owner_name": "testuser",
       "sample_count": 3,
+      "star_count": 0,
     },
     {
       "created_at": "[timestamp]",
@@ -58,6 +62,7 @@ it("GET /datasets/list", async () => {
       "median_trace_count": 10,
       "owner_name": "testuser",
       "sample_count": 1,
+      "star_count": 0,
     },
     {
       "created_at": "[timestamp]",
@@ -68,6 +73,7 @@ it("GET /datasets/list", async () => {
       "median_trace_count": 5,
       "owner_name": "testuser",
       "sample_count": 3,
+      "star_count": 0,
     },
   ],
 }
