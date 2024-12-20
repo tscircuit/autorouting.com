@@ -3,6 +3,7 @@ import { SampleThumbnail } from "@/components/SampleThumbnail"
 import { Button } from "@/components/ui/button"
 import { getBaseApiUrl, ky } from "@/lib/ky"
 import { range } from "@/lib/utils/range"
+import { timeAgo } from "@/lib/utils/time-ago"
 import { ArrowLeft } from "lucide-react"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -31,18 +32,25 @@ export default async function DatasetPage({ params }: DatasetPageProps) {
     .json()
 
   return (
-    <div className="container mx-auto py-6">
-      <h1 className="text-xl font-bold mb-4 flex items-center">
-        <Link href="/datasets">
-          <Button variant="ghost">
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Datasets
-          </Button>
-        </Link>
+    <div className="container mx-auto py-6 px-4">
+      <Link href="/datasets">
+        <Button variant="ghost" className="text-xs pl-0 ml-0 opacity-50">
+          <ArrowLeft className="w-4 h-4" />
+          Datasets
+        </Button>
+      </Link>
+      <h1 className="text-xl font-bold mb-2 flex items-center">
         {dataset.dataset_name_with_owner}
       </h1>
+      <div className="flex items-center mb-4 text-xs text-gray-500">
+        {dataset.sample_count} Samples
+        <div className="bg-gray-300 rounded-xl w-1 h-1 ml-1 mr-1" />
+        Updated{" "}
+        {timeAgo.format(new Date(dataset.updated_at ?? dataset.created_at))}
+        <div className="bg-gray-300 rounded-xl w-1 h-1 ml-1 mr-1" />v
+        {dataset.version}
+      </div>
       <div className="text-xs my-4">
-        <h2 className="text-lg font-bold mb-2">Description</h2>
         {dataset.description_md ? (
           <Markdown>{dataset.description_md}</Markdown>
         ) : (

@@ -12,7 +12,7 @@ export function Header() {
 
   return (
     <header className="border-b">
-      <div className="container flex h-16 items-center mx-auto">
+      <div className="container flex h-16 px-4 items-center mx-auto">
         <Link href="/" className="flex items-center space-x-2">
           <Image alt="autorouting text logo" src={ardot} className="w-8" />
           <span className="text-md">autorouting</span>

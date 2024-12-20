@@ -22,10 +22,10 @@ export const DatasetMiniCard = ({ dataset }: { dataset: Dataset }) => {
           Updated{" "}
           {timeAgo.format(new Date(dataset.updated_at ?? dataset.created_at))}
         </div>
-        <div className="bg-gray-300 rounded-xl w-1 h-1 ml-1 mr-1" />
+        {/* <div className="bg-gray-300 rounded-xl w-1 h-1 ml-1 mr-1" />
         <div className="text-gray-500 flex items-center">
           <Star className="w-2 h-2 mr-0.5" />5
-        </div>
+        </div> */}
       </div>
     </Link>
   )
