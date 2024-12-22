@@ -16,7 +16,12 @@ const withErrorHandling = createWithDefaultExceptionHandling({
 export const withRouteSpec = createWithWinterSpec({
   apiName: "autorouting Datasets API",
   productionServerUrl: "https://dataset-api.autorouting.com/api",
-  beforeAuthMiddleware: [withRequestLogging, withErrorHandling, withCtxError],
+  beforeAuthMiddleware: [
+    withRequestLogging,
+    withErrorHandling,
+    withCtxError,
+    withCors,
+  ],
   authMiddleware: {},
   afterAuthMiddleware: [
     withDb,

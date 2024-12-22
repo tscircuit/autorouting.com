@@ -23,9 +23,12 @@ interface Dataset {
 export default function ContributePage() {
   const isLoggedIn = useGlobalStore((s) => !!s.session)
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
-  const [selectedSnippet, setSelectedSnippet] = useState("")
+  const [selectedSnippet, setSelectedSnippet] = useState<{
+    snippet_id: string
+    name: string
+  } | null>(null)
   const snippetsBaseApiUrl = useSnippetsBaseApiUrl()
-  const [sampleRange, setSampleRange] = useState({ start: "", end: "" })
+  const [sampleRange, setSampleRange] = useState({ start: 1, end: 2 })
   const [userDatasets, setUserDatasets] = useState<Dataset[]>([
     {
       id: "1",
@@ -66,7 +69,7 @@ export default function ContributePage() {
 
       {step === 3 && (
         <ContributeProcessingStep
-          selectedSnippet={selectedSnippet}
+          selectedSnippetName={selectedSnippet?.name!}
           sampleRange={sampleRange}
           onFinish={() => {
             setStep(4)

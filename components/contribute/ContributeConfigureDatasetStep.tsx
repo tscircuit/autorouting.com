@@ -37,8 +37,11 @@ import { ChevronDown } from "lucide-react"
 import { useState } from "react"
 
 interface ContributeConfigureDatasetStepProps {
-  selectedSnippet: string
-  onChangeSelectedSnippet: (value: string) => void
+  selectedSnippet: { snippet_id: string; name: string } | null
+  onChangeSelectedSnippet: (value: {
+    snippet_id: string
+    name: string
+  }) => void
   sampleRange: { start: number; end: number }
   onChangeSampleRange: (value: { start: number; end: number }) => void
   onSubmit: () => void
@@ -97,11 +100,7 @@ export function ContributeConfigureDatasetStep({
           >
             <PopoverTrigger asChild>
               <Button variant="outline" className="w-full justify-between">
-                {selectedSnippet
-                  ? mySnippets.data?.find(
-                      (s) => s.snippet_id === selectedSnippet,
-                    )?.name
-                  : "Choose a snippet"}
+                {selectedSnippet ? selectedSnippet?.name : "Choose a snippet"}
                 <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
               </Button>
             </PopoverTrigger>
@@ -116,7 +115,7 @@ export function ContributeConfigureDatasetStep({
                         key={snippet.snippet_id}
                         className="cursor-pointer hover:bg-gray-100"
                         onSelect={() => {
-                          onChangeSelectedSnippet(snippet.snippet_id)
+                          onChangeSelectedSnippet(snippet)
                           setSnippetSelectionOpen(false)
                         }}
                       >
