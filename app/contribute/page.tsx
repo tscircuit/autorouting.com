@@ -58,7 +58,9 @@ export default function ContributePage() {
           onChangeSelectedSnippet={setSelectedSnippet}
           sampleRange={sampleRange}
           onChangeSampleRange={setSampleRange}
-          onSubmit={handleSubmit}
+          onSubmit={() => {
+            setStep(3)
+          }}
         />
       )}
 
@@ -72,7 +74,13 @@ export default function ContributePage() {
         />
       )}
 
-      {step === 4 && <ContributeSuccessStep />}
+      {step === 4 && (
+        <ContributeSuccessStep
+          onReset={() => {
+            setStep(2)
+          }}
+        />
+      )}
 
       {isLoggedIn && (
         <YourDatasets datasets={userDatasets} onNewVersion={() => {}} />

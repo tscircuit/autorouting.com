@@ -11,7 +11,7 @@ import {
 import { CheckCircle } from "lucide-react"
 import Link from "next/link"
 
-export function ContributeSuccessStep() {
+export function ContributeSuccessStep({ onReset }: { onReset: () => void }) {
   return (
     <Card>
       <CardHeader>
@@ -25,15 +25,20 @@ export function ContributeSuccessStep() {
       </CardHeader>
       <CardContent className="space-y-4">
         <p className="text-sm text-muted-foreground">
-          Thank you for contributing to the autorouting dataset. Your contribution
-          will help improve PCB autorouting for everyone.
+          Thank you for contributing to the autorouting dataset! Your
+          contribution will help improve PCB autorouting for everyone.
         </p>
         <div className="flex gap-2">
+          <Link href="/datasets/todo">
+            <Button variant="outline">View Dataset</Button>
+          </Link>
           <Link href="/datasets">
             <Button variant="outline">View All Datasets</Button>
           </Link>
           <Link href="/contribute">
-            <Button>Contribute Another</Button>
+            <Button variant="outline" onClick={onReset}>
+              Contribute Another
+            </Button>
           </Link>
         </div>
       </CardContent>
