@@ -18,7 +18,7 @@ export default async function DatasetsPage() {
       <div className="flex flex-col flex-grow">
         <div className="p-4 flex items-center justify-center">
           <h1 className="text-md">
-            Datasets <span className="text-gray-500">3</span>
+            Datasets <span className="text-gray-500">{datasets.length}</span>
           </h1>
           <div className="flex-grow" />
           <Input className="max-w-64" placeholder="Search datasets" />

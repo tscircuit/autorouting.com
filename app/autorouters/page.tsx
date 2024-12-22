@@ -19,7 +19,8 @@ export default async function AutoroutersPage() {
         <div className="flex flex-col flex-grow">
           <div className="p-4 flex items-center justify-center">
             <h1 className="text-md">
-              Autorouters <span className="text-gray-500">2</span>
+              Autorouters{" "}
+              <span className="text-gray-500">{autorouters.length}</span>
             </h1>
             <div className="flex-grow" />
             <Input className="max-w-64" placeholder="Search autorouters" />
