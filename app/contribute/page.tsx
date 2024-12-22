@@ -1,9 +1,12 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { ContributeLoginStep } from "@/components/contribute/ContributeLoginStep"
 import { ContributeConfigureDatasetStep } from "@/components/contribute/ContributeConfigureDatasetStep"
 import { YourDatasets } from "@/components/contribute/YourDatasets"
+import { useGlobalStore } from "@/hooks/use-global-store"
+import { useQuery } from "@tanstack/react-query"
+import { useSnippetsBaseApiUrl } from "@/hooks/use-snippets-base-api-url"
 
 export const dynamic = "force-dynamic"
 
@@ -16,9 +19,10 @@ interface Dataset {
 }
 
 export default function ContributePage() {
+  const isLoggedIn = useGlobalStore((s) => !!s.session)
   const [step, setStep] = useState<1 | 2>(1)
-  const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [selectedSnippet, setSelectedSnippet] = useState("")
+  const snippetsBaseApiUrl = useSnippetsBaseApiUrl()
   const [sampleRange, setSampleRange] = useState({ start: "", end: "" })
   const [userDatasets, setUserDatasets] = useState<Dataset[]>([
     {
@@ -30,47 +34,34 @@ export default function ContributePage() {
     },
   ])
 
-  const handleLogin = () => {
-    setIsLoggedIn(true)
-    setStep(2)
-  }
+  useEffect(() => {
+    if (isLoggedIn && step === 1) {
+      setStep(2)
+    }
+  }, [isLoggedIn, step])
 
   const handleSubmit = () => {
     // Handle submission logic here
   }
 
-  const handleNewVersion = (datasetId: string) => {
-    setUserDatasets((prev) =>
-      prev.map((dataset) =>
-        dataset.id === datasetId
-          ? {
-              ...dataset,
-              version: dataset.version + 1,
-              status: "Processing",
-            }
-          : dataset,
-      ),
-    )
-  }
-
   return (
-    <div className="container mx-auto py-6 max-w-2xl px-4">
-      <h1 className="text-3xl font-bold mb-6">Contribute Dataset</h1>
+    <div className="container mx-auto py-6 max-w-2xl flex flex-col space-y-4 px-4">
+      <h1 className="text-3xl font-bold mb-2">Contribute Dataset</h1>
 
-      {step === 1 && !isLoggedIn && <ContributeLoginStep onLogin={handleLogin} />}
+      {step === 1 && <ContributeLoginStep />}
 
-      {step === 2 && isLoggedIn && (
+      {step === 2 && (
         <ContributeConfigureDatasetStep
           selectedSnippet={selectedSnippet}
-          setSelectedSnippet={setSelectedSnippet}
+          onChangeSelectedSnippet={setSelectedSnippet}
           sampleRange={sampleRange}
-          setSampleRange={setSampleRange}
+          onChangeSampleRange={setSampleRange}
           onSubmit={handleSubmit}
         />
       )}
 
       {isLoggedIn && (
-        <YourDatasets datasets={userDatasets} onNewVersion={handleNewVersion} />
+        <YourDatasets datasets={userDatasets} onNewVersion={() => {}} />
       )}
     </div>
   )

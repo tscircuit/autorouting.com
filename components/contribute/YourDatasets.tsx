@@ -50,7 +50,7 @@ export function YourDatasets({ datasets, onNewVersion }: YourDatasetsProps) {
                 onClick={() => onNewVersion(dataset.id)}
                 disabled={dataset.status === "Processing"}
               >
-                Release New Version
+                Regenerate
               </Button>
             </div>
           ))}

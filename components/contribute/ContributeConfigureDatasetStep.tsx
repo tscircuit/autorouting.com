@@ -16,23 +16,53 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import {} from "@/components/ui/
+import { useGlobalStore } from "@/hooks/use-global-store"
+import { useSnippetsBaseApiUrl } from "@/hooks/use-snippets-base-api-url"
+import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
 
 interface ContributeConfigureDatasetStepProps {
   selectedSnippet: string
-  setSelectedSnippet: (value: string) => void
+  onChangeSelectedSnippet: (value: string) => void
   sampleRange: { start: string; end: string }
-  setSampleRange: (value: { start: string; end: string }) => void
+  onChangeSampleRange: (value: { start: string; end: string }) => void
   onSubmit: () => void
 }
 
 export function ContributeConfigureDatasetStep({
   selectedSnippet,
-  setSelectedSnippet,
+  onChangeSelectedSnippet,
   sampleRange,
-  setSampleRange,
+  onChangeSampleRange,
   onSubmit,
 }: ContributeConfigureDatasetStepProps) {
+  const snippetsBaseApiUrl = useSnippetsBaseApiUrl()
+  const session = useGlobalStore((s) => s.session)
+
+  const mySnippets = useQuery({
+    queryKey: ["my-snippets"],
+    queryFn: () =>
+      fetch(
+        `${snippetsBaseApiUrl}/snippets/list?owner_name=${session?.github_username}`,
+        {
+          headers: {
+            Authorization: `Bearer ${session?.token}`,
+          },
+        },
+      )
+        .then((res) => res.json())
+        .then(
+          (a) =>
+            a.snippets as Array<{
+              snippet_id: string
+              unscoped_name: string
+              owner_name: string
+              name: string
+            }>,
+        ),
+  })
+
   return (
     <Card className="mb-6">
       <CardHeader>
@@ -48,14 +78,17 @@ export function ContributeConfigureDatasetStep({
           <label className="text-sm font-medium">Select Snippet</label>
           <Select
             value={selectedSnippet}
-            onValueChange={setSelectedSnippet}
+            onValueChange={onChangeSelectedSnippet}
           >
             <SelectTrigger>
               <SelectValue placeholder="Choose a snippet" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="snippet1">Snippet 1</SelectItem>
-              <SelectItem value="snippet2">Snippet 2</SelectItem>
+              {mySnippets.data?.map((snippet) => (
+                <SelectItem key={snippet.snippet_id} value={snippet.snippet_id}>
+                  {snippet.name}
+                </SelectItem>
+              ))}
             </SelectContent>
           </Select>
         </div>
@@ -67,7 +100,7 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.start}
               onChange={(e) =>
-                setSampleRange((prev) => ({
+                onChangeSampleRange((prev) => ({
                   ...prev,
                   start: e.target.value,
                 }))
@@ -81,7 +114,7 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.end}
               onChange={(e) =>
-                setSampleRange((prev) => ({
+                onChangeSampleRange((prev) => ({
                   ...prev,
                   end: e.target.value,
                 }))
