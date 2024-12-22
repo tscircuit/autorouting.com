@@ -47,9 +47,21 @@ export function ContributeProcessingStep({
         setSamplesProcessed(progress)
       })
 
-      uploader.on("sample:error", (e) => {
+      uploader.on("sample:error", async (e) => {
         console.error(`Error processing sample ${e.sampleNumber}:`, e.error)
-        errors.push(`Error processing sample: ${e.toString()}`)
+        let errorMessage = `Error processing sample ${e.sampleNumber}: `
+        if (e.error.response) {
+          // Try to get the response payload for more details
+          try {
+            const payload = await e.error.response.json()
+            errorMessage += JSON.stringify(payload, null, 2)
+          } catch {
+            errorMessage += e.error.toString()
+          }
+        } else {
+          errorMessage += e.error.toString()
+        }
+        errors.push(errorMessage)
         setError(errors.join("\n"))
       })
 
@@ -85,7 +97,9 @@ export function ContributeProcessingStep({
           )}{" "}
           of {sampleRange.end - sampleRange.start}
         </div>
-        {error && <div className="text-sm text-red-500">{error}</div>}
+        {error && (
+          <div className="text-sm text-red-500 whitespace-pre">{error}</div>
+        )}
       </CardContent>
     </Card>
   )
