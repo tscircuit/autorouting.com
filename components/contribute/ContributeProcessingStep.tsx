@@ -28,11 +28,11 @@ export function ContributeProcessingStep({
   const session = useGlobalStore((s) => s.session)
 
   useEffect(() => {
-    let errors: string[] = []
+    const errors: string[] = []
     const processDataset = async () => {
       const uploader = new SnippetDatasetUploader({
         sessionToken: session?.token!,
-        snippetName: `@tsci/${selectedSnippetName.replace("/", ".")}`,
+        snippetName: selectedSnippetName,
         sampleRange: {
           start: sampleRange.start,
           end: sampleRange.end,
@@ -75,7 +75,7 @@ export function ContributeProcessingStep({
     }
 
     processDataset()
-  }, [selectedSnippetName, sampleRange, onFinish])
+  }, [])
 
   return (
     <Card>

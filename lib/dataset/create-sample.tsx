@@ -34,8 +34,13 @@ export const createSampleCircuitJson = async (
 export const createSample = async (
   circuitType: "keyboard" | "blinking-led",
   sampleNum: number,
+  tsciImportName?: string,
 ) => {
-  const circuitJson = await createSampleCircuitJson(circuitType, sampleNum)
+  const circuitJson = await createSampleCircuitJson(
+    circuitType,
+    sampleNum,
+    tsciImportName,
+  )
 
   const pcbSvg = convertCircuitJsonToPcbSvg(circuitJson)
 

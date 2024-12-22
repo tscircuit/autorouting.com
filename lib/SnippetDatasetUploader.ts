@@ -42,7 +42,7 @@ export class SnippetDatasetUploader
     const { dataset } = await ky
       .post<{ dataset: Dataset }>("datasets/create", {
         json: {
-          dataset_name: this.options.snippetName,
+          dataset_name: this.options.snippetName.split("/").pop(),
           median_trace_count: 100, // TODO: Calculate this
           max_layer_count: 2, // TODO: Calculate this
           license_type: "MIT",
@@ -79,7 +79,8 @@ export class SnippetDatasetUploader
         const { circuitJson, pcbSvg, simpleRouteJson, dsnString } =
           await createSample(
             "keyboard", // TODO: Make this configurable
-            sampleNum
+            sampleNum,
+            `@tsci/${this.options.snippetName.replace("/", ".")}`
           )
 
         // Create each file
