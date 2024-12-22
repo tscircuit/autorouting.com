@@ -7,6 +7,8 @@ import { YourDatasets } from "@/components/contribute/YourDatasets"
 import { useGlobalStore } from "@/hooks/use-global-store"
 import { useQuery } from "@tanstack/react-query"
 import { useSnippetsBaseApiUrl } from "@/hooks/use-snippets-base-api-url"
+import { ContributeProcessingStep } from "@/components/contribute/ContributeProcessingStep"
+import { ContributeSuccessStep } from "@/components/contribute/ContributeSuccessStep"
 
 export const dynamic = "force-dynamic"
 
@@ -20,7 +22,7 @@ interface Dataset {
 
 export default function ContributePage() {
   const isLoggedIn = useGlobalStore((s) => !!s.session)
-  const [step, setStep] = useState<1 | 2>(1)
+  const [step, setStep] = useState<1 | 2 | 3 | 4>(1)
   const [selectedSnippet, setSelectedSnippet] = useState("")
   const snippetsBaseApiUrl = useSnippetsBaseApiUrl()
   const [sampleRange, setSampleRange] = useState({ start: "", end: "" })
@@ -59,6 +61,18 @@ export default function ContributePage() {
           onSubmit={handleSubmit}
         />
       )}
+
+      {step === 3 && (
+        <ContributeProcessingStep
+          selectedSnippet={selectedSnippet}
+          sampleRange={sampleRange}
+          onFinish={() => {
+            setStep(4)
+          }}
+        />
+      )}
+
+      {step === 4 && <ContributeSuccessStep />}
 
       {isLoggedIn && (
         <YourDatasets datasets={userDatasets} onNewVersion={() => {}} />

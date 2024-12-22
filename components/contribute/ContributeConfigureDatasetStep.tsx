@@ -16,11 +16,25 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
-import {} from "@/components/ui/
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command"
 import { useGlobalStore } from "@/hooks/use-global-store"
 import { useSnippetsBaseApiUrl } from "@/hooks/use-snippets-base-api-url"
 import { useQuery } from "@tanstack/react-query"
 import Link from "next/link"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@radix-ui/react-popover"
+import { ChevronDown } from "lucide-react"
+import { useState } from "react"
 
 interface ContributeConfigureDatasetStepProps {
   selectedSnippet: string
@@ -39,6 +53,7 @@ export function ContributeConfigureDatasetStep({
 }: ContributeConfigureDatasetStepProps) {
   const snippetsBaseApiUrl = useSnippetsBaseApiUrl()
   const session = useGlobalStore((s) => s.session)
+  const [snippetSelectionOpen, setSnippetSelectionOpen] = useState(false)
 
   const mySnippets = useQuery({
     queryKey: ["my-snippets"],
@@ -76,21 +91,43 @@ export function ContributeConfigureDatasetStep({
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium">Select Snippet</label>
-          <Select
-            value={selectedSnippet}
-            onValueChange={onChangeSelectedSnippet}
+          <Popover
+            open={snippetSelectionOpen}
+            onOpenChange={setSnippetSelectionOpen}
           >
-            <SelectTrigger>
-              <SelectValue placeholder="Choose a snippet" />
-            </SelectTrigger>
-            <SelectContent>
-              {mySnippets.data?.map((snippet) => (
-                <SelectItem key={snippet.snippet_id} value={snippet.snippet_id}>
-                  {snippet.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
+            <PopoverTrigger asChild>
+              <Button variant="outline" className="w-full justify-between">
+                {selectedSnippet
+                  ? mySnippets.data?.find(
+                      (s) => s.snippet_id === selectedSnippet,
+                    )?.name
+                  : "Choose a snippet"}
+                <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+              </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-80 p-0 bg-white border rounded-md shadow-lg z-10">
+              <Command>
+                <CommandInput placeholder="Search snippets..." />
+                <CommandList>
+                  <CommandEmpty>No snippets found.</CommandEmpty>
+                  <CommandGroup>
+                    {mySnippets.data?.map((snippet) => (
+                      <CommandItem
+                        key={snippet.snippet_id}
+                        className="cursor-pointer hover:bg-gray-100"
+                        onSelect={() => {
+                          onChangeSelectedSnippet(snippet.snippet_id)
+                          setSnippetSelectionOpen(false)
+                        }}
+                      >
+                        {snippet.name}
+                      </CommandItem>
+                    ))}
+                  </CommandGroup>
+                </CommandList>
+              </Command>
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="grid grid-cols-2 gap-4">
@@ -100,6 +137,7 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.start}
               onChange={(e) =>
+                // @ts-ignore
                 onChangeSampleRange((prev) => ({
                   ...prev,
                   start: e.target.value,
@@ -114,6 +152,7 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.end}
               onChange={(e) =>
+                // @ts-ignore
                 onChangeSampleRange((prev) => ({
                   ...prev,
                   end: e.target.value,
@@ -122,6 +161,16 @@ export function ContributeConfigureDatasetStep({
               placeholder="100"
             />
           </div>
+        </div>
+
+        <div className="text-sm text-gray-500">
+          After submitting, the dataset will be processed on your machine. The
+          snippet will be evaluated over and over again with an increasing
+          `sampleNumber` prop. If any snippet fails to render, the dataset will
+          be marked as failed.
+        </div>
+        <div className="text-sm text-gray-500">
+          Do not close this page until your dataset has completely processed!
         </div>
 
         <Button
