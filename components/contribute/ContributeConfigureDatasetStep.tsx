@@ -110,18 +110,26 @@ export function ContributeConfigureDatasetStep({
                 <CommandList>
                   <CommandEmpty>No snippets found.</CommandEmpty>
                   <CommandGroup>
-                    {mySnippets.data?.map((snippet) => (
-                      <CommandItem
-                        key={snippet.snippet_id}
-                        className="cursor-pointer hover:bg-gray-100"
-                        onSelect={() => {
-                          onChangeSelectedSnippet(snippet)
-                          setSnippetSelectionOpen(false)
-                        }}
-                      >
-                        {snippet.name}
-                      </CommandItem>
-                    ))}
+                    {mySnippets.data
+                      ?.sort((a, b) => {
+                        const aIsSample = a.name.endsWith("-sample")
+                        const bIsSample = b.name.endsWith("-sample")
+                        if (aIsSample && !bIsSample) return -1
+                        if (!aIsSample && bIsSample) return 1
+                        return 0
+                      })
+                      .map((snippet) => (
+                        <CommandItem
+                          key={snippet.snippet_id}
+                          className="cursor-pointer hover:bg-gray-100"
+                          onSelect={() => {
+                            onChangeSelectedSnippet(snippet)
+                            setSnippetSelectionOpen(false)
+                          }}
+                        >
+                          {snippet.name}
+                        </CommandItem>
+                      ))}
                   </CommandGroup>
                 </CommandList>
               </Command>
@@ -172,10 +180,21 @@ export function ContributeConfigureDatasetStep({
           Do not close this page until your dataset has completely processed!
         </div>
 
+        {!selectedSnippet?.name.endsWith("-sample") && (
+          <div className="text-sm text-red-500">
+            Snippet names must end with "-sample" to be used in a dataset.
+          </div>
+        )}
+
         <Button
           onClick={onSubmit}
           variant="outline"
-          disabled={!selectedSnippet || !sampleRange.start || !sampleRange.end}
+          disabled={
+            !selectedSnippet ||
+            !sampleRange.start ||
+            !sampleRange.end ||
+            !selectedSnippet?.name.endsWith("-sample")
+          }
           className="w-full"
         >
           Submit Dataset

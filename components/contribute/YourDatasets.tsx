@@ -1,5 +1,6 @@
 "use client"
 
+import type { Dataset } from "@/api/lib/db/schema"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -8,14 +9,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
-interface Dataset {
-  id: string
-  name: string
-  status: "Processing" | "Uploaded"
-  version: number
-  sample_count: number
-}
 
 interface YourDatasetsProps {
   datasets: Dataset[]
@@ -35,13 +28,13 @@ export function YourDatasets({ datasets, onNewVersion }: YourDatasetsProps) {
         <div className="space-y-4">
           {datasets.map((dataset) => (
             <div
-              key={dataset.id}
+              key={dataset.dataset_id}
               className="flex items-center justify-between p-4 border rounded-lg"
             >
               <div>
-                <h3 className="font-medium">{dataset.name}</h3>
+                <h3 className="font-medium">{dataset.dataset_name}</h3>
                 <p className="text-sm text-gray-500">
-                  Version {dataset.version} • {dataset.status} •{" "}
+                  Version {dataset.version} • unknown status •{" "}
                   {dataset.sample_count} samples
                 </p>
               </div>

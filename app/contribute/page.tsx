@@ -9,16 +9,9 @@ import { useQuery } from "@tanstack/react-query"
 import { useSnippetsBaseApiUrl } from "@/hooks/use-snippets-base-api-url"
 import { ContributeProcessingStep } from "@/components/contribute/ContributeProcessingStep"
 import { ContributeSuccessStep } from "@/components/contribute/ContributeSuccessStep"
+import type { Dataset } from "@/api/lib/db/schema"
 
 export const dynamic = "force-dynamic"
-
-interface Dataset {
-  id: string
-  name: string
-  status: "Processing" | "Uploaded"
-  version: number
-  sample_count: number
-}
 
 export default function ContributePage() {
   const isLoggedIn = useGlobalStore((s) => !!s.session)
@@ -31,23 +24,26 @@ export default function ContributePage() {
   const [sampleRange, setSampleRange] = useState({ start: 1, end: 2 })
   const [userDatasets, setUserDatasets] = useState<Dataset[]>([
     {
-      id: "1",
-      name: "Example Dataset",
-      status: "Uploaded",
+      dataset_name: "Example Dataset",
+      dataset_id: "example-dataset-1",
+      dataset_name_with_owner: "johndoe/example-dataset",
+      owner_name: "johndoe",
       sample_count: 100,
-      version: 1,
+      version: "1.0.0",
+      median_trace_count: 25,
+      max_layer_count: 5,
+      star_count: 12,
+      created_at: new Date().toISOString(),
     },
   ])
+
+  const [newDataset, setNewDataset] = useState<Dataset | null>(null)
 
   useEffect(() => {
     if (isLoggedIn && step === 1) {
       setStep(2)
     }
   }, [isLoggedIn, step])
-
-  const handleSubmit = () => {
-    // Handle submission logic here
-  }
 
   return (
     <div className="container mx-auto py-6 max-w-2xl flex flex-col space-y-4 px-4">
@@ -71,7 +67,8 @@ export default function ContributePage() {
         <ContributeProcessingStep
           selectedSnippetName={selectedSnippet?.name!}
           sampleRange={sampleRange}
-          onFinish={() => {
+          onFinish={({ dataset }) => {
+            setNewDataset(dataset)
             setStep(4)
           }}
         />
@@ -79,6 +76,7 @@ export default function ContributePage() {
 
       {step === 4 && (
         <ContributeSuccessStep
+          dataset={newDataset!}
           onReset={() => {
             setStep(2)
           }}

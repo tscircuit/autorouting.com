@@ -40,5 +40,17 @@ export default withRouteSpec({
     return state
   })
 
+  // Update the dataset's sample count
+  const sampleCount = ctx.db
+    .getState()
+    .samples.filter((s) => s.dataset_id === dataset_id).length
+  ctx.db.setState((state) => {
+    const dataset = state.datasets.find((d) => d.dataset_id === dataset_id)
+    if (dataset) {
+      dataset.sample_count = sampleCount
+    }
+    return state
+  })
+
   return ctx.json({ sample: newSample })
 })

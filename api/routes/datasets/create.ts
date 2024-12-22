@@ -22,6 +22,20 @@ export default withRouteSpec({
 })((req, ctx) => {
   const { dataset_name, ...rest } = req.jsonBody
 
+  // Check if dataset already exists with this name for this owner
+  const existingDataset = ctx.db
+    .getState()
+    .datasets.find(
+      (d) => d.dataset_name === dataset_name && d.owner_name === "test-user"
+    )
+
+  if (existingDataset) {
+    return ctx.error(409, {
+      error_code: "dataset_already_exists",
+      message: `A dataset named '${dataset_name}' already exists for this user`,
+    })
+  }
+
   // In our mock implementation, we'll use a fixed github username
   const owner_name = "test-user"
 

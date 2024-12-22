@@ -8,14 +8,15 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { SnippetDatasetUploader } from "@/lib/SnippetDatasetUploader"
 import { useGlobalStore } from "@/hooks/use-global-store"
+import type { Dataset } from "@/api/lib/db/schema"
 
 interface ContributeProcessingStepProps {
   selectedSnippetName: string
   sampleRange: { start: number; end: number }
-  onFinish: () => void
+  onFinish: (params: { dataset: Dataset }) => void
 }
 
 export function ContributeProcessingStep({
@@ -67,7 +68,9 @@ export function ContributeProcessingStep({
 
       try {
         await uploader.run()
-        onFinish()
+        onFinish({
+          dataset: uploader.dataset!,
+        })
       } catch (e: any) {
         errors.push(e.toString())
         setError(errors.join("\n"))
@@ -98,7 +101,9 @@ export function ContributeProcessingStep({
           of {sampleRange.end - sampleRange.start}
         </div>
         {error && (
-          <div className="text-sm text-red-500 whitespace-pre">{error}</div>
+          <div className="text-xs text-red-500 whitespace-pre-wrap">
+            {error}
+          </div>
         )}
       </CardContent>
     </Card>

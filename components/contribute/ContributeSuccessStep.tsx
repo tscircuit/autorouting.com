@@ -1,5 +1,6 @@
 "use client"
 
+import type { Dataset } from "@/api/lib/db/schema"
 import { Button } from "@/components/ui/button"
 import {
   Card,
@@ -11,7 +12,10 @@ import {
 import { CheckCircle } from "lucide-react"
 import Link from "next/link"
 
-export function ContributeSuccessStep({ onReset }: { onReset: () => void }) {
+export function ContributeSuccessStep({
+  dataset,
+  onReset,
+}: { dataset: Dataset; onReset: () => void }) {
   return (
     <Card>
       <CardHeader>
@@ -29,7 +33,7 @@ export function ContributeSuccessStep({ onReset }: { onReset: () => void }) {
           contribution will help improve PCB autorouting for everyone.
         </p>
         <div className="flex gap-2">
-          <Link href="/datasets/todo">
+          <Link href={`/datasets/${dataset.dataset_name_with_owner}`}>
             <Button variant="outline">View Dataset</Button>
           </Link>
           <Link href="/datasets">

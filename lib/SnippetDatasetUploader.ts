@@ -32,6 +32,8 @@ export class SnippetDatasetUploader
 {
   private options: SnippetDatasetUploaderOptions
 
+  dataset: Dataset | null = null
+
   constructor(options: SnippetDatasetUploaderOptions) {
     super()
     this.options = options
@@ -54,6 +56,15 @@ export class SnippetDatasetUploader
         },
       })
       .json()
+      .catch(async (error) => {
+        if (error.response) {
+          const body = await error.response.json()
+          throw new Error(`Failed to create dataset: ${JSON.stringify(body)}`)
+        }
+        throw error
+      })
+
+    this.dataset = dataset
 
     // Process each sample in the range
     for (
