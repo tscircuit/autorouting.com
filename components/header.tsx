@@ -3,12 +3,24 @@
 import Link from "next/link"
 import { cn } from "@/lib/utils"
 import { usePathname } from "next/navigation"
-import { Code, Database, Route, Upload, UploadCloud } from "lucide-react"
+import {
+  Code,
+  Database,
+  LogOut,
+  Route,
+  Upload,
+  UploadCloud,
+} from "lucide-react"
 import ardot from "/images/ardot.svg"
 import Image from "next/image.js"
+import { useGlobalStore } from "@/hooks/use-global-store"
+import { Button } from "./ui/button"
+import { useSignOut } from "@/hooks/use-sign-out"
 
 export function Header() {
   const pathname = usePathname()
+  const isLoggedIn = useGlobalStore((s) => !!s.session)
+  const { signOut } = useSignOut()
 
   return (
     <header className="border-b">
@@ -18,7 +30,7 @@ export function Header() {
           <span className="text-md">autorouting</span>
         </Link>
         <div className="flex-1" />
-        <nav className="ml-8 flex space-x-6">
+        <nav className="ml-8 flex items-center space-x-6">
           <Link
             href="https://blog.autorouting.com"
             className={cn(
@@ -73,6 +85,15 @@ export function Header() {
           >
             About
           </Link>
+          {isLoggedIn && (
+            <Button
+              className="mx-0 px-1"
+              variant="ghost"
+              onClick={() => signOut()}
+            >
+              <LogOut className="w-4 h-4" />
+            </Button>
+          )}
         </nav>
       </div>
     </header>
