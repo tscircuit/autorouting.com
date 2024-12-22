@@ -4,6 +4,7 @@ import { datasetSchema } from "@/api/lib/db/schema"
 
 export default withRouteSpec({
   methods: ["GET"],
+  auth: "none",
   jsonResponse: z.object({
     datasets: z.array(datasetSchema),
   }),

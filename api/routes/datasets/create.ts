@@ -1,7 +1,6 @@
 import { withRouteSpec } from "@/api/lib/middleware/with-winter-spec"
 import { z } from "zod"
 import { datasetSchema } from "@/api/lib/db/schema"
-import { randomUUID } from "crypto"
 
 export default withRouteSpec({
   methods: ["POST"],
@@ -40,7 +39,7 @@ export default withRouteSpec({
   const owner_name = "test-user"
 
   const newDataset = {
-    dataset_id: randomUUID(),
+    dataset_id: `dataset-${ctx.db.getState().datasets.length + 1}`,
     dataset_name_with_owner: `${owner_name}/${dataset_name}`,
     dataset_name,
     owner_name,

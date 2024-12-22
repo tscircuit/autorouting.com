@@ -7,6 +7,7 @@ import {
   withCtxError,
 } from "winterspec/middleware"
 import { withDb } from "./with-db"
+import { withSessionAuth } from "./with-session-auth"
 
 const withErrorHandling = createWithDefaultExceptionHandling({
   coloredLogs: true,
@@ -22,7 +23,9 @@ export const withRouteSpec = createWithWinterSpec({
     withCtxError,
     withCors,
   ],
-  authMiddleware: {},
+  authMiddleware: {
+    session: withSessionAuth,
+  },
   afterAuthMiddleware: [
     withDb,
     createWithDefaultExceptionHandling({
