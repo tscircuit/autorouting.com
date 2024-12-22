@@ -4,6 +4,7 @@ import { datasetSchema } from "@/api/lib/db/schema"
 
 export default withRouteSpec({
   methods: ["POST"],
+  auth: "session",
   jsonBody: z.object({
     dataset_name: z.string(),
     median_trace_count: z.number(),
@@ -43,6 +44,7 @@ export default withRouteSpec({
     dataset_name_with_owner: `${owner_name}/${dataset_name}`,
     dataset_name,
     owner_name,
+    registry_account_id: ctx.auth.account_id,
     sample_count: 0,
     median_trace_count: rest.median_trace_count,
     max_layer_count: rest.max_layer_count,

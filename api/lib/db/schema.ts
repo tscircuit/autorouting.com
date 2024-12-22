@@ -13,6 +13,8 @@ export const datasetSchema = z.object({
   max_layer_count: z.number(),
   star_count: z.number().optional().default(0),
 
+  registry_account_id: z.string().nullish(),
+
   version: z.string().default("1.0.0"),
   description_md: z.string().optional(),
 
