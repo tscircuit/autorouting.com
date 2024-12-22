@@ -12,7 +12,7 @@ import { useEffect, useState } from "react"
 
 interface ContributeProcessingStepProps {
   selectedSnippet: string
-  sampleRange: { start: string; end: string }
+  sampleRange: { start: number; end: number }
   onFinish: () => void
 }
 
@@ -21,23 +21,9 @@ export function ContributeProcessingStep({
   sampleRange,
   onFinish,
 }: ContributeProcessingStepProps) {
-  const [progress, setProgress] = useState(0)
+  const [samplesProcessed, setSamplesProcessed] = useState(0)
 
-  useEffect(() => {
-    // Simulate processing progress
-    const interval = setInterval(() => {
-      setProgress((prev) => {
-        if (prev >= 100) {
-          clearInterval(interval)
-          onFinish()
-          return 100
-        }
-        return prev + 1
-      })
-    }, 50)
-
-    return () => clearInterval(interval)
-  }, [onFinish])
+  useEffect(() => {}, [])
 
   return (
     <Card>
@@ -48,10 +34,13 @@ export function ContributeProcessingStep({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Progress value={progress} className="w-full" />
+        <Progress value={samplesProcessed} className="w-full" />
         <div className="text-sm text-muted-foreground">
-          Processing sample {Math.floor((parseInt(sampleRange.end) - parseInt(sampleRange.start)) * (progress / 100))} of{" "}
-          {parseInt(sampleRange.end) - parseInt(sampleRange.start)}
+          Processing sample{" "}
+          {Math.floor(
+            (sampleRange.end - sampleRange.start) * (samplesProcessed / 100),
+          )}{" "}
+          of {sampleRange.end - sampleRange.start}
         </div>
       </CardContent>
     </Card>

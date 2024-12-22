@@ -39,8 +39,8 @@ import { useState } from "react"
 interface ContributeConfigureDatasetStepProps {
   selectedSnippet: string
   onChangeSelectedSnippet: (value: string) => void
-  sampleRange: { start: string; end: string }
-  onChangeSampleRange: (value: { start: string; end: string }) => void
+  sampleRange: { start: number; end: number }
+  onChangeSampleRange: (value: { start: number; end: number }) => void
   onSubmit: () => void
 }
 
@@ -140,7 +140,7 @@ export function ContributeConfigureDatasetStep({
                 // @ts-ignore
                 onChangeSampleRange((prev) => ({
                   ...prev,
-                  start: e.target.value,
+                  start: Number.parseInt(e.target.value),
                 }))
               }
               placeholder="1"
@@ -155,7 +155,7 @@ export function ContributeConfigureDatasetStep({
                 // @ts-ignore
                 onChangeSampleRange((prev) => ({
                   ...prev,
-                  end: e.target.value,
+                  end: Number.parseInt(e.target.value),
                 }))
               }
               placeholder="100"

@@ -10,6 +10,7 @@ import { convertCircuitJsonToDsnString } from "dsn-converter"
 export const createSampleCircuitJson = async (
   circuitType: "keyboard" | "blinking-led",
   sampleNum: number,
+  tsciImportName = "@tsci/seveibar.keyboard-sample",
 ) => {
   const circuit = await createCircuitWebWorker({
     webWorkerUrl,
@@ -17,9 +18,9 @@ export const createSampleCircuitJson = async (
 
   if (circuitType === "keyboard") {
     await circuit.execute(`
-      import KeyboardSample from "@tsci/seveibar.keyboard-sample"
+      import MyCircuit from "${tsciImportName}"
 
-      circuit.add(<KeyboardSample sampleNumber={${sampleNum}} />)
+      circuit.add(<MyCircuit sampleNumber={${sampleNum}} />)
     `)
 
     const circuitJson = await circuit.getCircuitJson()
