@@ -30,6 +30,7 @@ it("GET /datasets/get", async () => {
     "owner_name": "testuser",
     "sample_count": 3,
     "star_count": 0,
+    "version": "1.0.0",
   },
 }
 `)

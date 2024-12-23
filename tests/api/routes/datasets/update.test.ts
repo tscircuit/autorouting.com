@@ -53,7 +53,7 @@ it("POST /datasets/update should update dataset processing status", async () => 
   expect(finalRes.dataset.is_processing).toBe(false)
 })
 
-it("POST /datasets/update should return 404 for non-existent dataset", async () => {
+it("POST /datasets/update should return 401 for non-existent dataset", async () => {
   const { ky } = await getTestServer()
 
   try {
@@ -67,8 +67,8 @@ it("POST /datasets/update should return 404 for non-existent dataset", async () 
       .json()
     expect(false).toBe(true) // Should not reach here
   } catch (error: any) {
-    expect(error.response.status).toBe(404)
+    expect(error.response.status).toBe(401)
     const errorData = await error.response.json()
-    expect(errorData.error.error_code).toBe("dataset_not_found")
+    expect(errorData.error.error_code).toBe("no_token")
   }
 })

@@ -19,6 +19,7 @@ it("GET /datasets/list", async () => {
       "owner_name": "testuser",
       "sample_count": 3,
       "star_count": 0,
+      "version": "1.0.0",
     },
     {
       "created_at": "[timestamp]",
@@ -30,6 +31,7 @@ it("GET /datasets/list", async () => {
       "owner_name": "testuser",
       "sample_count": 3,
       "star_count": 0,
+      "version": "2.0.0",
     },
   ],
 }
