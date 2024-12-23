@@ -144,9 +144,9 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.start}
               onChange={(e) =>
-                setSampleRange({
+                onChangeSampleRange({
                   ...sampleRange,
-                  start: e.target.value,
+                  start: Number(e.target.value),
                 })
               }
               placeholder="1"
@@ -158,9 +158,9 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.end}
               onChange={(e) =>
-                setSampleRange({
+                onChangeSampleRange({
                   ...sampleRange,
-                  end: e.target.value,
+                  end: Number(e.target.value),
                 })
               }
               placeholder="100"
