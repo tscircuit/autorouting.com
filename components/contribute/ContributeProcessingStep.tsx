@@ -12,6 +12,7 @@ import { useEffect, useRef, useState } from "react"
 import { SnippetDatasetUploader } from "@/lib/SnippetDatasetUploader"
 import { useGlobalStore } from "@/hooks/use-global-store"
 import type { Dataset } from "@/api/lib/db/schema"
+import { useQueryClient } from "@tanstack/react-query"
 
 interface ContributeProcessingStepProps {
   selectedSnippetName: string
@@ -27,8 +28,10 @@ export function ContributeProcessingStep({
   const [samplesProcessed, setSamplesProcessed] = useState(0)
   const [error, setError] = useState<string | null>(null)
   const session = useGlobalStore((s) => s.session)
+  const queryClient = useQueryClient()
 
   useEffect(() => {
+    setError(null)
     const errors: string[] = []
     const processDataset = async () => {
       const uploader = new SnippetDatasetUploader({
@@ -70,6 +73,9 @@ export function ContributeProcessingStep({
         await uploader.run()
         onFinish({
           dataset: uploader.dataset!,
+        })
+        await queryClient.invalidateQueries({
+          queryKey: ["userDatasets"],
         })
       } catch (e: any) {
         errors.push(e.toString())

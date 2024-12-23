@@ -1,7 +1,8 @@
 "use client"
 
-import type { Dataset } from "@/api/lib/db/schema"
+import { Dataset } from "@/api/lib/db/schema"
 import { Button } from "@/components/ui/button"
+import { useDeleteDatasetDialog } from "@/components/dialogs/DeleteDatasetDialog"
 import {
   Card,
   CardContent,
@@ -19,6 +20,7 @@ interface YourDatasetsProps {
 }
 
 export function YourDatasets({ onNewVersion }: YourDatasetsProps) {
+  const { DialogComponent, openDialog } = useDeleteDatasetDialog()
   const session = useGlobalStore((s) => s.session)
   const datasetsQuery = useQuery({
     queryKey: ["userDatasets"],
@@ -67,9 +69,11 @@ export function YourDatasets({ onNewVersion }: YourDatasetsProps) {
                 <Button
                   variant="outline"
                   className="text-red-600 hover:text-red-600 hover:bg-red-50"
+                  onClick={() => openDialog()}
                 >
                   Delete
                 </Button>
+                <DialogComponent dataset={dataset} />
               </div>
             </div>
           ))}
