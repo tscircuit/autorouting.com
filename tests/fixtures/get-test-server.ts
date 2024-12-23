@@ -1,6 +1,6 @@
 import { afterEach } from "bun:test"
 import { tmpdir } from "node:os"
-import defaultKy from "ky"
+import defaultKy, { type AfterResponseHook } from "ky"
 import { startServer } from "./start-server"
 import { seedDatabase } from "./seed-database"
 import * as jose from "jose"
@@ -23,8 +23,31 @@ export const getTestServer = async (): Promise<TestFixture> => {
   })
 
   const url = `http://127.0.0.1:${port}`
+
+  const prettyResponseErrorHook: AfterResponseHook = async (
+    _request,
+    _options,
+    response
+  ) => {
+    if (!response.ok) {
+      try {
+        const errorData = await response.json()
+        throw new Error(
+          `FAIL [${response.status}]: ${_request.method} ${
+            new URL(_request.url).pathname
+          } \n\n ${JSON.stringify(errorData, null, 2)}`
+        )
+      } catch (e) {
+        //ignore, allow the error to be thrown
+      }
+    }
+  }
+
   const ky = defaultKy.create({
     prefixUrl: url,
+    hooks: {
+      afterResponse: [prettyResponseErrorHook],
+    },
   })
 
   const testUserKy = defaultKy.create({
@@ -39,6 +62,9 @@ export const getTestServer = async (): Promise<TestFixture> => {
         .setIssuedAt()
         .setExpirationTime("24h")
         .sign(new TextEncoder().encode("1234"))}`,
+    },
+    hooks: {
+      afterResponse: [prettyResponseErrorHook],
     },
   })
 

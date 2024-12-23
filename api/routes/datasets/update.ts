@@ -5,18 +5,15 @@ import { datasetSchema } from "@/api/lib/db/schema"
 export default withRouteSpec({
   methods: ["POST"],
   auth: "session",
-  commonParams: z.object({
-    dataset_id: z.string(),
-  }),
   jsonBody: z.object({
-    is_processing: z.literal(false),
+    dataset_id: z.string(),
+    is_processing: z.boolean(),
   }),
   jsonResponse: z.object({
     dataset: datasetSchema,
   }),
 })((req, ctx) => {
-  const { dataset_id } = req.commonParams
-  const { is_processing } = req.jsonBody
+  const { is_processing, dataset_id } = req.jsonBody
 
   // Find the dataset
   const dataset = ctx.db

@@ -28,6 +28,7 @@ it("GET /datasets/get", async () => {
     "max_layer_count": 2,
     "median_trace_count": 10,
     "owner_name": "testuser",
+    "registry_account_id": "test-account-id",
     "sample_count": 3,
     "star_count": 0,
     "version": "1.0.0",
