@@ -19,7 +19,7 @@ export default withRouteSpec({
     .datasets.find(
       (d) =>
         d.dataset_id === dataset_id ||
-        d.dataset_name_with_owner === dataset_name_with_owner
+        d.dataset_name_with_owner === dataset_name_with_owner,
     )
 
   if (!dataset) {

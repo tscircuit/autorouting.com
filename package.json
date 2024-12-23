@@ -9,7 +9,9 @@
     "generate:seed": "bun run scripts/generate-seed-database.ts",
     "generate:types": "winterspec codegen route-types -o lib/route-types.generated.ts",
     "dev": "next dev",
-    "build": "next build"
+    "build": "next build",
+    "format": "biome format --write .",
+    "format:check": "biome format ."
   },
   "devDependencies": {
     "@biomejs/biome": "^1.8.3",

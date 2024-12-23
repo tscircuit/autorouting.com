@@ -113,5 +113,5 @@ const db = await generateSeedDatabase()
 
 writeFileSync(
   "tests/fixtures/seed-database.generated.json",
-  JSON.stringify(db, null, 2)
+  JSON.stringify(db, null, 2),
 )

@@ -5,7 +5,7 @@ export const withSessionAuth: Middleware<
   {
     error: (
       status: number,
-      body: { error_code: string; message: string }
+      body: { error_code: string; message: string },
     ) => Response
   },
   {

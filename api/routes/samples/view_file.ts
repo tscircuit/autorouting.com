@@ -19,7 +19,7 @@ export default withRouteSpec({
     .samples.find(
       (s) =>
         s.sample_id === sample_id ||
-        (s.sample_number === sample_number && s.dataset_id === dataset_id)
+        (s.sample_number === sample_number && s.dataset_id === dataset_id),
     )
 
   if (!sample) {
@@ -33,7 +33,7 @@ export default withRouteSpec({
   const sample_file = ctx.db
     .getState()
     .sample_files.find(
-      (f) => f.sample_id === sample.sample_id && f.file_path === file_path
+      (f) => f.sample_id === sample.sample_id && f.file_path === file_path,
     )
 
   if (!sample_file) {

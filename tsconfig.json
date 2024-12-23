@@ -22,11 +22,7 @@
       "@/*": ["./*"]
     },
     // Include the DOM types
-    "lib": [
-      "es2022",
-      "dom",
-      "dom.iterable"
-    ],
+    "lib": ["es2022", "dom", "dom.iterable"],
     "incremental": true,
     "plugins": [
       {
@@ -42,7 +38,5 @@
     "app/**/*.tsx",
     ".next/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

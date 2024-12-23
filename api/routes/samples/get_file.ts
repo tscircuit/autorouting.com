@@ -30,7 +30,7 @@ export default withRouteSpec({
   const sample_file = ctx.db
     .getState()
     .sample_files.find(
-      (f) => f.sample_id === sample_id && f.file_path === file_path
+      (f) => f.sample_id === sample_id && f.file_path === file_path,
     )
 
   if (!sample_file) {

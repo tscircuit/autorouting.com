@@ -21,7 +21,7 @@ interface SampleErrorEvent {
 export declare interface ISnippetDatasetUploader {
   on(
     event: "sample:finished",
-    listener: (event: SampleFinishedEvent) => void
+    listener: (event: SampleFinishedEvent) => void,
   ): this
   on(event: "sample:error", listener: (event: SampleErrorEvent) => void): this
 }
@@ -93,7 +93,7 @@ export class SnippetDatasetUploader
           await createSample(
             "keyboard", // TODO: Make this configurable
             sampleNum,
-            `@tsci/${this.options.snippetName.replace("/", ".")}`
+            `@tsci/${this.options.snippetName.replace("/", ".")}`,
           )
 
         // Create each file

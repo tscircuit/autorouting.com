@@ -27,7 +27,7 @@ export const getTestServer = async (): Promise<TestFixture> => {
   const prettyResponseErrorHook: AfterResponseHook = async (
     _request,
     _options,
-    response
+    response,
   ) => {
     if (!response.ok) {
       try {
@@ -35,7 +35,7 @@ export const getTestServer = async (): Promise<TestFixture> => {
         throw new Error(
           `FAIL [${response.status}]: ${_request.method} ${
             new URL(_request.url).pathname
-          } \n\n ${JSON.stringify(errorData, null, 2)}`
+          } \n\n ${JSON.stringify(errorData, null, 2)}`,
         )
       } catch (e) {
         //ignore, allow the error to be thrown

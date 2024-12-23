@@ -30,7 +30,7 @@ it("GET /samples/view_file with download=true should set Content-Disposition", a
 
   expect(response.headers.get("Content-Type")).toBe("application/json")
   expect(response.headers.get("Content-Disposition")).toMatchInlineSnapshot(
-    `"attachment; filename="custom-keyboards-sample1-unrouted_circuit.json""`
+    `"attachment; filename="custom-keyboards-sample1-unrouted_circuit.json""`,
   )
 
   const content = await response.text()

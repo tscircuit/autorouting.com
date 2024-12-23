@@ -46,7 +46,7 @@ export default withRouteSpec({
     state.datasets = state.datasets.filter((d) => d.dataset_id !== dataset_id)
     state.samples = state.samples.filter((s) => s.dataset_id !== dataset_id)
     state.sample_files = state.sample_files.filter(
-      (f) => !sampleIds.includes(f.sample_id)
+      (f) => !sampleIds.includes(f.sample_id),
     )
     return state
   })

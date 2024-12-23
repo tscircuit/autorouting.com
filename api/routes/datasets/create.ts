@@ -29,20 +29,20 @@ export default withRouteSpec({
   const existingDataset = ctx.db
     .getState()
     .datasets.find(
-      (d) => d.dataset_name === dataset_name && d.owner_name === "test-user"
+      (d) => d.dataset_name === dataset_name && d.owner_name === "test-user",
     )
 
   if (existingDataset?.is_processing && rest.replace_existing_if_processing) {
     // Delete the existing dataset
     ctx.db.setState((state) => {
       state.datasets = state.datasets.filter(
-        (d) => d.dataset_id !== existingDataset.dataset_id
+        (d) => d.dataset_id !== existingDataset.dataset_id,
       )
       state.samples = state.samples.filter(
-        (s) => s.dataset_id !== existingDataset.dataset_id
+        (s) => s.dataset_id !== existingDataset.dataset_id,
       )
       state.sample_files = state.sample_files.filter(
-        (sf) => sf.dataset_id !== existingDataset.dataset_id
+        (sf) => sf.dataset_id !== existingDataset.dataset_id,
       )
       return state
     })
