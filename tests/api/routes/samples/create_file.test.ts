@@ -19,6 +19,7 @@ it("POST /samples/create_file should create a new sample file", async () => {
 {
   "sample_file": {
     "created_at": "[timestamp]",
+    "dataset_id": "dataset-1",
     "file_path": "test.json",
     "mimetype": "application/json",
     "sample_file_id": "sample-file-13",

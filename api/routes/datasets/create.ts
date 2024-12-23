@@ -15,6 +15,9 @@ export default withRouteSpec({
     website_url: z.string().url().optional(),
     license_url: z.string().url().optional(),
     version: z.string().optional(),
+    is_processing: z.boolean().optional(),
+
+    replace_existing_if_processing: z.boolean().optional(),
   }),
   jsonResponse: z.object({
     dataset: datasetSchema,
@@ -29,7 +32,21 @@ export default withRouteSpec({
       (d) => d.dataset_name === dataset_name && d.owner_name === "test-user"
     )
 
-  if (existingDataset) {
+  if (existingDataset?.is_processing && rest.replace_existing_if_processing) {
+    // Delete the existing dataset
+    ctx.db.setState((state) => {
+      state.datasets = state.datasets.filter(
+        (d) => d.dataset_id !== existingDataset.dataset_id
+      )
+      state.samples = state.samples.filter(
+        (s) => s.dataset_id !== existingDataset.dataset_id
+      )
+      state.sample_files = state.sample_files.filter(
+        (sf) => sf.dataset_id !== existingDataset.dataset_id
+      )
+      return state
+    })
+  } else if (existingDataset) {
     return ctx.error(409, {
       error_code: "dataset_already_exists",
       message: `A dataset named '${dataset_name}' already exists for this user`,
@@ -51,6 +68,7 @@ export default withRouteSpec({
     star_count: 0,
     version: rest.version ?? "1.0.0",
     description_md: rest.description_md,
+    is_processing: rest.is_processing ?? false,
     created_at: new Date().toISOString(),
   }
 

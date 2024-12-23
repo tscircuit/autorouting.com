@@ -50,6 +50,8 @@ export class SnippetDatasetUploader
           license_type: "MIT",
           description_md: `Dataset generated from snippet ${this.options.snippetName}`,
           version: "1.0.0",
+          is_processing: true,
+          replace_existing_if_processing: true,
         },
         headers: {
           Authorization: `Bearer ${this.options.sessionToken}`,
@@ -143,5 +145,16 @@ export class SnippetDatasetUploader
         throw error
       }
     }
+
+    // Mark the dataset as not processing
+    await ky.post("datasets/update", {
+      json: {
+        dataset_id: this.dataset.dataset_id,
+        is_processing: false,
+      },
+      headers: {
+        Authorization: `Bearer ${this.options.sessionToken}`,
+      },
+    })
   }
 }

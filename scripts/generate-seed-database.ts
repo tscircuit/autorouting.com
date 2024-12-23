@@ -80,6 +80,7 @@ export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {
     for (const [filename, content] of Object.entries(filesToInsert)) {
       db.sample_files.push({
         sample_file_id: `sample-${i + 1}-${filename}`,
+        dataset_id: "dataset-1",
         sample_id: `sample-${i + 1}`,
         file_path: filename,
         mimetype: getMimetypeFromFileName(filename),

@@ -31,6 +31,7 @@ export default withRouteSpec({
   // Create the sample file
   const newSampleFile = {
     sample_file_id: `sample-file-${ctx.db.getState().sample_files.length + 1}`,
+    dataset_id: sample.dataset_id,
     sample_id,
     file_path,
     mimetype,
