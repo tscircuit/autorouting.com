@@ -13,8 +13,11 @@ export const datasetSchema = z.object({
   max_layer_count: z.number(),
   star_count: z.number().optional().default(0),
 
+  registry_account_id: z.string().nullish(),
+
   version: z.string().default("1.0.0"),
   description_md: z.string().optional(),
+  is_processing: z.boolean().optional(),
 
   updated_at: z.string().datetime().optional(),
   created_at: z.string().datetime(),
@@ -35,6 +38,7 @@ export type Sample = z.infer<typeof sampleSchema>
 export const sampleFileSchema = z.object({
   sample_file_id: z.string(),
   sample_id: z.string(),
+  dataset_id: z.string(),
 
   file_path: z.string(),
   mimetype: z.string(),
@@ -68,6 +72,7 @@ export const autorouterRunResultSchema = z.object({
   autorouter_run_result_id: z.string(),
   autorouter_id: z.string(),
   sample_id: z.string(),
+  dataset_id: z.string(),
 
   started_at: z.string().datetime(),
   finished_at: z.string().datetime(),

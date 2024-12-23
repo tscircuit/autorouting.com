@@ -1,10 +1,12 @@
 "use client"
 
-import { useEffect } from "react"
+import { useEffect, Suspense } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useGlobalStore } from "@/hooks/use-global-store"
 
-export default function AuthorizePage() {
+export const dynamic = "force-dynamic"
+
+function AuthorizeContent() {
   const router = useRouter()
   const searchParams = useSearchParams()
   const setSession = useGlobalStore((s) => s.setSession)
@@ -18,7 +20,7 @@ export default function AuthorizePage() {
 
     // Parse the JWT token to get session info
     const [_header, payload, _signature] = sessionToken.split(".")
-    const decodedPayload = JSON.parse(atob(payload as any))
+    const decodedPayload = JSON.parse(atob(payload!))
 
     // Store the session
     setSession({
@@ -36,5 +38,13 @@ export default function AuthorizePage() {
     <div className="flex items-center justify-center min-h-screen">
       <p className="text-lg">Authorizing...</p>
     </div>
+  )
+}
+
+export default function AuthorizePage() {
+  return (
+    <Suspense>
+      <AuthorizeContent />
+    </Suspense>
   )
 }

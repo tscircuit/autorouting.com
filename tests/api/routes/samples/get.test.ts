@@ -16,6 +16,12 @@ it("GET /samples/get", async () => {
   expect(replaceTimestamps(res)).toMatchInlineSnapshot(`
 {
   "sample": {
+    "available_file_paths": [
+      "unrouted_circuit.json",
+      "unrouted.dsn",
+      "unrouted_pcb.svg",
+      "unrouted_simple_route.json",
+    ],
     "created_at": "[timestamp]",
     "dataset_id": "dataset-1",
     "sample_id": "sample-1",

@@ -30,7 +30,7 @@ export default withRouteSpec({
   const sample = ctx.db
     .getState()
     .samples.find(
-      (s) => s.dataset_id === dataset_id && s.sample_number === sample_number
+      (s) => s.dataset_id === dataset_id && s.sample_number === sample_number,
     )
 
   if (!sample) {

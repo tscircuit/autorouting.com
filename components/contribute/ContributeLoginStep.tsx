@@ -10,11 +10,7 @@ import {
 } from "@/components/ui/card"
 import { useSignIn } from "@/hooks/use-sign-in"
 
-interface ContributeLoginStepProps {
-  onLogin: () => void
-}
-
-export function ContributeLoginStep({ onLogin }: ContributeLoginStepProps) {
+export function ContributeLoginStep(props: {}) {
   const signIn = useSignIn()
   return (
     <Card>

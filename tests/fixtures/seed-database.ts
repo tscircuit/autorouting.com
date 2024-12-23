@@ -1,5 +1,5 @@
 import type { DbClient } from "@/api/lib/db/db-client"
-import { createSample } from "./create-sample"
+import { createSample } from "../../lib/dataset/create-sample"
 import databaseSeedJson from "./seed-database.generated.json"
 
 export const seedDatabase = async (db: DbClient) => {

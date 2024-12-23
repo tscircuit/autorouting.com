@@ -1,5 +1,5 @@
 import { test, expect } from "bun:test"
-import { createSample } from "./create-sample"
+import { createSample } from "../../lib/dataset/create-sample"
 
 test("create keyboard sample", async () => {
   const { circuitJson, dsnString, pcbSvg, simpleRouteJson } =

@@ -19,8 +19,8 @@ export const useGlobalStore = create<Store>()(
     }),
     {
       name: "session_store",
-    }
-  )
+    },
+  ),
 )
 
 useGlobalStore.subscribe((state, prevState) => {

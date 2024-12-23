@@ -4,6 +4,10 @@ import { seedDatabase } from "@/tests/fixtures/seed-database"
 import type { Middleware } from "winterspec"
 import { getSeedDatabase } from "../db/seed"
 
+declare global {
+  var db: DbClient | undefined
+}
+
 export const withDb: Middleware<
   {},
   {
@@ -11,7 +15,12 @@ export const withDb: Middleware<
   }
 > = async (req, ctx, next) => {
   if (!ctx.db) {
+    if (globalThis.db) {
+      ctx.db = globalThis.db
+      return next(req, ctx)
+    }
     ctx.db = createDatabase(getSeedDatabase())
+    globalThis.db = ctx.db
   }
   return next(req, ctx)
 }

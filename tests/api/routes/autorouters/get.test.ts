@@ -30,7 +30,7 @@ it("GET /autorouters/get", async () => {
 
 it("GET /autorouters/get should return 404 for non-existent autorouter", async () => {
   const { ky } = await getTestServer()
-  
+
   try {
     await ky
       .get("autorouters/get", {

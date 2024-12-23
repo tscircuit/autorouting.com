@@ -7,7 +7,7 @@ import { combine } from "zustand/middleware"
 import type { z } from "zod"
 
 export const createDatabase = (
-  initialState: z.input<typeof databaseSchema>
+  initialState: z.input<typeof databaseSchema>,
 ) => {
   return hoist(createStore(getInitializer(initialState)))
 }

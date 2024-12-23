@@ -8,7 +8,7 @@ it("GET /samples/get_file", async () => {
     .get<any>("samples/get_file", {
       searchParams: {
         sample_id: "sample-1",
-        file_path: "circuit.json",
+        file_path: "unrouted_circuit.json",
       },
     })
     .json()
