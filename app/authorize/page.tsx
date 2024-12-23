@@ -4,6 +4,8 @@ import { useEffect } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 import { useGlobalStore } from "@/hooks/use-global-store"
 
+export const dynamic = "force-dynamic"
+
 export default function AuthorizePage() {
   const router = useRouter()
   const searchParams = useSearchParams()
