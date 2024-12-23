@@ -180,7 +180,7 @@ export function ContributeConfigureDatasetStep({
           Do not close this page until your dataset has completely processed!
         </div>
 
-        {!selectedSnippet?.name.endsWith("-sample") && (
+        {selectedSnippet && !selectedSnippet?.name.endsWith("-sample") && (
           <div className="text-sm text-red-500">
             Snippet names must end with "-sample" to be used in a dataset.
           </div>

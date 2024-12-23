@@ -22,20 +22,6 @@ export default function ContributePage() {
   } | null>(null)
   const snippetsBaseApiUrl = useSnippetsBaseApiUrl()
   const [sampleRange, setSampleRange] = useState({ start: 1, end: 2 })
-  const [userDatasets, setUserDatasets] = useState<Dataset[]>([
-    {
-      dataset_name: "Example Dataset",
-      dataset_id: "example-dataset-1",
-      dataset_name_with_owner: "johndoe/example-dataset",
-      owner_name: "johndoe",
-      sample_count: 100,
-      version: "1.0.0",
-      median_trace_count: 25,
-      max_layer_count: 5,
-      star_count: 12,
-      created_at: new Date().toISOString(),
-    },
-  ])
 
   const [newDataset, setNewDataset] = useState<Dataset | null>(null)
 
@@ -83,9 +69,7 @@ export default function ContributePage() {
         />
       )}
 
-      {isLoggedIn && (
-        <YourDatasets datasets={userDatasets} onNewVersion={() => {}} />
-      )}
+      {isLoggedIn && <YourDatasets onNewVersion={() => {}} />}
     </div>
   )
 }
