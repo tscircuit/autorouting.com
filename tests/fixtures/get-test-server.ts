@@ -3,11 +3,13 @@ import { tmpdir } from "node:os"
 import defaultKy from "ky"
 import { startServer } from "./start-server"
 import { seedDatabase } from "./seed-database"
+import * as jose from "jose"
 
 interface TestFixture {
   url: string
   server: any
   ky: typeof defaultKy
+  testUserKy: typeof defaultKy
 }
 
 export const getTestServer = async (): Promise<TestFixture> => {
@@ -25,6 +27,21 @@ export const getTestServer = async (): Promise<TestFixture> => {
     prefixUrl: url,
   })
 
+  const testUserKy = defaultKy.create({
+    prefixUrl: url,
+    headers: {
+      Authorization: `Bearer ${await new jose.SignJWT({
+        github_username: "testuser",
+        account_id: "test-account-id",
+        session_id: "test-session-id",
+      })
+        .setProtectedHeader({ alg: "HS256" })
+        .setIssuedAt()
+        .setExpirationTime("24h")
+        .sign(new TextEncoder().encode("1234"))}`,
+    },
+  })
+
   afterEach(async () => {
     await server.stop()
     // Here you might want to add logic to drop the test database
@@ -34,5 +51,6 @@ export const getTestServer = async (): Promise<TestFixture> => {
     url,
     server,
     ky,
+    testUserKy,
   }
 }
