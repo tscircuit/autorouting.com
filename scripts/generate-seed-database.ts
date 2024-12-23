@@ -63,8 +63,9 @@ export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {
   for (let i = 0; i < 3; i++) {
     const { circuitJson, dsnString, pcbSvg, simpleRouteJson } =
       await createSample("keyboard", i + 1)
+    const sample_id = `sample-${i + 1}`
     db.samples.push({
-      sample_id: `sample-${i + 1}`,
+      sample_id,
       dataset_id: "dataset-1",
       sample_number: i + 1,
       created_at: new Date().toISOString(),
@@ -79,9 +80,9 @@ export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {
 
     for (const [filename, content] of Object.entries(filesToInsert)) {
       db.sample_files.push({
-        sample_file_id: `sample-${i + 1}-${filename}`,
+        sample_file_id: `${sample_id}-${filename}`,
         dataset_id: "dataset-1",
-        sample_id: `sample-${i + 1}`,
+        sample_id,
         file_path: filename,
         mimetype: getMimetypeFromFileName(filename),
         text_content:
