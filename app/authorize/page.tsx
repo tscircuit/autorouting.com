@@ -18,7 +18,7 @@ export default function AuthorizePage() {
 
     // Parse the JWT token to get session info
     const [_header, payload, _signature] = sessionToken.split(".")
-    const decodedPayload = JSON.parse(atob(payload))
+    const decodedPayload = JSON.parse(atob(payload as any))
 
     // Store the session
     setSession({

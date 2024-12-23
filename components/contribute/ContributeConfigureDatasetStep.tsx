@@ -46,10 +46,7 @@ export function ContributeConfigureDatasetStep({
       <CardContent className="space-y-4">
         <div className="space-y-2">
           <label className="text-sm font-medium">Select Snippet</label>
-          <Select
-            value={selectedSnippet}
-            onValueChange={setSelectedSnippet}
-          >
+          <Select value={selectedSnippet} onValueChange={setSelectedSnippet}>
             <SelectTrigger>
               <SelectValue placeholder="Choose a snippet" />
             </SelectTrigger>
@@ -67,10 +64,10 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.start}
               onChange={(e) =>
-                setSampleRange((prev) => ({
-                  ...prev,
+                setSampleRange({
+                  ...sampleRange,
                   start: e.target.value,
-                }))
+                })
               }
               placeholder="1"
             />
@@ -81,10 +78,10 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.end}
               onChange={(e) =>
-                setSampleRange((prev) => ({
-                  ...prev,
+                setSampleRange({
+                  ...sampleRange,
                   end: e.target.value,
-                }))
+                })
               }
               placeholder="100"
             />
