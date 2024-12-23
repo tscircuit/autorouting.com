@@ -1,5 +1,5 @@
 import type { DatabaseSchema } from "@/api/lib/db/schema"
-import { createSample } from "@/tests/fixtures/create-sample"
+import { createSample } from "@/lib/dataset/create-sample"
 import { writeFileSync } from "node:fs"
 
 export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {

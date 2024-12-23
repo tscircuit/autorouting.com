@@ -1,6 +1,6 @@
 "use client"
 
-import { Dataset } from "@/api/lib/db/schema"
+import type { Dataset } from "@/api/lib/db/schema"
 import { Button } from "@/components/ui/button"
 import { useDeleteDatasetDialog } from "@/components/dialogs/DeleteDatasetDialog"
 import {

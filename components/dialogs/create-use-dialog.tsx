@@ -1,4 +1,4 @@
-import { FunctionComponent, useMemo, useState } from "react"
+import { type FunctionComponent, useMemo, useState } from "react"
 
 export const createUseDialog = <DialogType extends React.ComponentType<any>>(
   DialogComponent: DialogType,

@@ -30,7 +30,7 @@ it("POST /samples/create_file should create a new sample file", async () => {
 
   // Verify the file was actually added to the database
   const fileRes = await ky
-    .get("samples/get_file", {
+    .get<any>("samples/get_file", {
       searchParams: {
         sample_id: "sample-1",
         file_path: "test.json",
