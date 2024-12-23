@@ -8,7 +8,14 @@
     "indentStyle": "space"
   },
   "files": {
-    "ignore": ["cosmos-export", "dist", "package.json", ".next", ".vscode"]
+    "ignore": [
+      "cosmos-export",
+      "dist",
+      "package.json",
+      ".next",
+      ".vscode",
+      "tsconfig.json"
+    ]
   },
   "javascript": {
     "formatter": {
