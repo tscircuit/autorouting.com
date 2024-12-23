@@ -144,11 +144,10 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.start}
               onChange={(e) =>
-                // @ts-ignore
-                onChangeSampleRange((prev) => ({
-                  ...prev,
-                  start: Number.parseInt(e.target.value),
-                }))
+                setSampleRange({
+                  ...sampleRange,
+                  start: e.target.value,
+                })
               }
               placeholder="1"
             />
@@ -159,11 +158,10 @@ export function ContributeConfigureDatasetStep({
               type="number"
               value={sampleRange.end}
               onChange={(e) =>
-                // @ts-ignore
-                onChangeSampleRange((prev) => ({
-                  ...prev,
-                  end: Number.parseInt(e.target.value),
-                }))
+                setSampleRange({
+                  ...sampleRange,
+                  end: e.target.value,
+                })
               }
               placeholder="100"
             />
