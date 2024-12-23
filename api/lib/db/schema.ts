@@ -72,6 +72,7 @@ export const autorouterRunResultSchema = z.object({
   autorouter_run_result_id: z.string(),
   autorouter_id: z.string(),
   sample_id: z.string(),
+  dataset_id: z.string(),
 
   started_at: z.string().datetime(),
   finished_at: z.string().datetime(),
