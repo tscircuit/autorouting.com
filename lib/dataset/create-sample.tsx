@@ -7,14 +7,22 @@ import webWorkerUrl from "@tscircuit/eval-webworker/blob-url"
 import { getSimpleRouteJson } from "@tscircuit/infgrid-ijump-astar"
 import { convertCircuitJsonToDsnString } from "dsn-converter"
 
+declare global {
+  var circuitWebWorker: Awaited<ReturnType<typeof createCircuitWebWorker>>
+}
+
 export const createSampleCircuitJson = async (
   circuitType: "keyboard" | "blinking-led",
   sampleNum: number,
   tsciImportName = "@tsci/seveibar.keyboard-sample",
 ) => {
-  const circuit = await createCircuitWebWorker({
-    webWorkerUrl,
-  })
+  if (!globalThis.circuitWebWorker) {
+    globalThis.circuitWebWorker = await createCircuitWebWorker({
+      webWorkerUrl,
+    })
+  }
+
+  const circuit = globalThis.circuitWebWorker
 
   if (circuitType === "keyboard") {
     await circuit.execute(`
