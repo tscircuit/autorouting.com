@@ -26,6 +26,7 @@ export function ContributeProcessingStep({
 }: ContributeProcessingStepProps) {
   const [samplesProcessed, setSamplesProcessed] = useState(0)
   const [error, setError] = useState<string | null>(null)
+  const [retryCount, setRetryCount] = useState(0)
   const session = useGlobalStore((s) => s.session)
   const queryClient = useQueryClient()
 
@@ -48,6 +49,8 @@ export function ContributeProcessingStep({
             (sampleRange.end - sampleRange.start + 1)) *
           100
         setSamplesProcessed(progress)
+        setRetryCount(0) // Reset retry count on success
+        setError(null) // Clear error on success
       })
 
       uploader.on("sample:error", async (e) => {
@@ -66,6 +69,7 @@ export function ContributeProcessingStep({
         }
         errors.push(errorMessage)
         setError(errors.join("\n"))
+        setRetryCount(e.attempts)
       })
 
       try {
@@ -114,6 +118,11 @@ export function ContributeProcessingStep({
         {error && (
           <div className="text-xs text-red-500 whitespace-pre-wrap">
             {error}
+          </div>
+        )}
+        {retryCount > 0 && retryCount <= 3 && (
+          <div className="text-xs text-yellow-500">
+            Retrying... ({retryCount}/3 attempts)
           </div>
         )}
       </CardContent>
