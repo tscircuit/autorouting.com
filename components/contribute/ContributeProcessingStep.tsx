@@ -1,6 +1,5 @@
 "use client"
 
-import { Progress } from "@/components/ui/progress"
 import {
   Card,
   CardContent,
@@ -98,13 +97,19 @@ export function ContributeProcessingStep({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Progress value={samplesProcessed} className="w-full" />
+        {/* Progress bar */}
+        <div className="w-full bg-gray-200 rounded-full h-4">
+          <div
+            className="bg-blue-500 h-4 rounded-full"
+            style={{ width: `${samplesProcessed}%` }}
+          ></div>
+        </div>
         <div className="text-sm text-muted-foreground">
           Processing sample{" "}
           {Math.floor(
             (sampleRange.end - sampleRange.start) * (samplesProcessed / 100),
           )}{" "}
-          of {sampleRange.end - sampleRange.start}
+          of {sampleRange.end - sampleRange.start + 1}
         </div>
         {error && (
           <div className="text-xs text-red-500 whitespace-pre-wrap">
