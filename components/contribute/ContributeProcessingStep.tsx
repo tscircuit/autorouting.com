@@ -109,7 +109,7 @@ export function ContributeProcessingStep({
           {Math.floor(
             (sampleRange.end - sampleRange.start) * (samplesProcessed / 100),
           )}{" "}
-          of {sampleRange.end}
+          of {sampleRange.end - sampleRange.start + 1}
         </div>
         {error && (
           <div className="text-xs text-red-500 whitespace-pre-wrap">
