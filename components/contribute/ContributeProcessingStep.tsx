@@ -1,6 +1,7 @@
 "use client"
 
-import { Progress } from "@/components/ui/progress"
+import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
+import "react-circular-progressbar/dist/styles.css"
 import {
   Card,
   CardContent,
@@ -98,13 +99,23 @@ export function ContributeProcessingStep({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <Progress value={samplesProcessed} className="w-full" />
+        <div className="w-32 h-32 mx-auto">
+          <CircularProgressbar
+            value={samplesProcessed}
+            text={`${Math.floor(samplesProcessed)}%`}
+            styles={buildStyles({
+              textColor: "#000",
+              pathColor: "#4caf50",
+              trailColor: "#d6d6d6",
+            })}
+          />
+        </div>
         <div className="text-sm text-muted-foreground">
           Processing sample{" "}
           {Math.floor(
             (sampleRange.end - sampleRange.start) * (samplesProcessed / 100),
           )}{" "}
-          of {sampleRange.end - sampleRange.start}
+          of {sampleRange.end}
         </div>
         {error && (
           <div className="text-xs text-red-500 whitespace-pre-wrap">
