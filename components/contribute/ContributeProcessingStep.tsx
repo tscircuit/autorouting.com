@@ -1,7 +1,5 @@
 "use client"
 
-import LinearProgress from "@material/react-linear-progress"
-import "@material/react-linear-progress/dist/linear-progress.css"
 import {
   Card,
   CardContent,
@@ -99,11 +97,13 @@ export function ContributeProcessingStep({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <LinearProgress
-          progress={samplesProcessed / 100}
-          buffer={1}
-          className="w-full"
-        />
+        {/* Progress bar */}
+        <div className="w-full bg-gray-200 rounded-full h-4">
+          <div
+            className="bg-blue-500 h-4 rounded-full"
+            style={{ width: `${samplesProcessed}%` }}
+          ></div>
+        </div>
         <div className="text-sm text-muted-foreground">
           Processing sample{" "}
           {Math.floor(
