@@ -5,8 +5,6 @@ import { Database, Star } from "lucide-react"
 import { ky } from "@/lib/ky"
 import type { Dataset } from "@/api/lib/db/schema"
 
-export const dynamic = "force-dynamic"
-
 export default async function DatasetsPage() {
   const { datasets } = await ky
     .get<{ datasets: Dataset[] }>("datasets/list")

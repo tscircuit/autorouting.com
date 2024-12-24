@@ -9,6 +9,7 @@ export const metadata = {
   title: "Autorouting - PCB Datasets and Models",
   description: "Browse and download PCB autorouting datasets and models",
 }
+export const fetchCache = 'force-no-store'
 
 export default function RootLayout({
   children,
