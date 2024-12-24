@@ -15,10 +15,7 @@ export default function Home() {
         </p>
         <p className="text-lg mb-4 text-gray-700">
           We're releasing{" "}
-          <a
-            href="https://github.com/tscircuit/autorouting-dataset"
-            className="text-blue-600 hover:underline"
-          >
+          <a href="/datasets" className="text-blue-600 hover:underline">
             open datasets and benchmarks
           </a>{" "}
           for autorouting. You should{" "}

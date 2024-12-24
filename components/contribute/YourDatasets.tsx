@@ -54,7 +54,8 @@ export function YourDatasets({ onNewVersion }: YourDatasetsProps) {
               <div>
                 <h3 className="font-medium">{dataset.dataset_name}</h3>
                 <p className="text-sm text-gray-500">
-                  Version {dataset.version} • unknown status •{" "}
+                  Version {dataset.version} •{" "}
+                  {dataset.is_processing ? "Processing" : "Uploaded"} •{" "}
                   {dataset.sample_count} samples
                 </p>
               </div>
