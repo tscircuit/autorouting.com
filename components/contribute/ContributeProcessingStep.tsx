@@ -1,7 +1,7 @@
 "use client"
 
-import { CircularProgressbar, buildStyles } from "react-circular-progressbar"
-import "react-circular-progressbar/dist/styles.css"
+import LinearProgress from "@material/react-linear-progress"
+import "@material/react-linear-progress/dist/linear-progress.css"
 import {
   Card,
   CardContent,
@@ -99,17 +99,11 @@ export function ContributeProcessingStep({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="w-32 h-32 mx-auto">
-          <CircularProgressbar
-            value={samplesProcessed}
-            text={`${Math.floor(samplesProcessed)}%`}
-            styles={buildStyles({
-              textColor: "#000",
-              pathColor: "#4caf50",
-              trailColor: "#d6d6d6",
-            })}
-          />
-        </div>
+        <LinearProgress
+          progress={samplesProcessed / 100}
+          buffer={1}
+          className="w-full"
+        />
         <div className="text-sm text-muted-foreground">
           Processing sample{" "}
           {Math.floor(
