@@ -55,7 +55,17 @@ export default async function DatasetPage({ params }: DatasetPageProps) {
       </div>
       <div className="text-xs my-4">
         {dataset.description_md ? (
-          <Markdown>{dataset.description_md}</Markdown>
+          <Markdown
+            components={{
+              a: ({ children, href }) => (
+                <a href={href} className="text-blue-500 hover:underline">
+                  {children}
+                </a>
+              ),
+            }}
+          >
+            {dataset.description_md}
+          </Markdown>
         ) : (
           <span className="text-muted-foreground">No Description Provided</span>
         )}

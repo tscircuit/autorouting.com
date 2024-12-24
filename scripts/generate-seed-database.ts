@@ -19,6 +19,8 @@ export const generateSeedDatabase = async (): Promise<DatabaseSchema> => {
     owner_name: "testuser",
     sample_count: 3,
     version: "1.0.0",
+    description_md:
+      "A dataset of custom keyboards based on [this snippet](https://tscircuit.com/seveibar/keyboard-sample)",
     registry_account_id: "test-account-id",
     median_trace_count: 10,
     max_layer_count: 2,
@@ -113,5 +115,5 @@ const db = await generateSeedDatabase()
 
 writeFileSync(
   "tests/fixtures/seed-database.generated.json",
-  JSON.stringify(db, null, 2),
+  JSON.stringify(db, null, 2)
 )
