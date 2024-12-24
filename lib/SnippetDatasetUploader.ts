@@ -21,7 +21,7 @@ interface SampleErrorEvent {
 export declare interface ISnippetDatasetUploader {
   on(
     event: "sample:finished",
-    listener: (event: SampleFinishedEvent) => void,
+    listener: (event: SampleFinishedEvent) => void
   ): this
   on(event: "sample:error", listener: (event: SampleErrorEvent) => void): this
 }
@@ -48,7 +48,7 @@ export class SnippetDatasetUploader
           median_trace_count: 100, // TODO: Calculate this
           max_layer_count: 2, // TODO: Calculate this
           license_type: "MIT",
-          description_md: `Dataset generated from snippet ${this.options.snippetName}`,
+          description_md: `Dataset generated from snippet [${this.options.snippetName}](https://tscircuit.com/${this.options.snippetName})`,
           version: "1.0.0",
           is_processing: true,
           replace_existing_if_processing: true,
@@ -93,7 +93,7 @@ export class SnippetDatasetUploader
           await createSample(
             "keyboard", // TODO: Make this configurable
             sampleNum,
-            `@tsci/${this.options.snippetName.replace("/", ".")}`,
+            `@tsci/${this.options.snippetName.replace("/", ".")}`
           )
 
         // Create each file
