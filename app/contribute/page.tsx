@@ -11,8 +11,6 @@ import { ContributeProcessingStep } from "@/components/contribute/ContributeProc
 import { ContributeSuccessStep } from "@/components/contribute/ContributeSuccessStep"
 import type { Dataset } from "@/api/lib/db/schema"
 
-export const dynamic = "force-dynamic"
-
 export default function ContributePage() {
   const isLoggedIn = useGlobalStore((s) => !!s.session)
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1)

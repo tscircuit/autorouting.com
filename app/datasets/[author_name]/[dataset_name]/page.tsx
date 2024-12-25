@@ -10,8 +10,6 @@ import { notFound } from "next/navigation"
 import { useState } from "react"
 import Markdown from "react-markdown"
 
-export const dynamic = "force-dynamic"
-
 interface DatasetPageProps {
   params: Promise<{
     author_name: string
