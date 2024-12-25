@@ -79,69 +79,9 @@ export class SnippetDatasetUploader
       const maxAttempts = 3
       while (attempt < maxAttempts) {
         try {
-          // Create the sample
-          const { sample } = await this.retryApiCall<{ sample: Sample }>(
-            "samples/create",
-            {
-              json: {
-                dataset_id: dataset.dataset_id,
-                sample_number: sampleNum,
-              },
-              headers: {
-                Authorization: `Bearer ${this.options.sessionToken}`,
-              },
-            },
-          )
-
-          // Generate all the sample files
-          const { circuitJson, pcbSvg, simpleRouteJson, dsnString } =
-            await createSample(
-              "keyboard", // TODO: Make this configurable
-              sampleNum,
-              `@tsci/${this.options.snippetName.replace("/", ".")}`,
-            )
-
-          // Create each file
-          const files = [
-            {
-              path: "unrouted_circuit.json",
-              content: JSON.stringify(circuitJson, null, 2),
-              mimetype: "application/json",
-            },
-            {
-              path: "unrouted.dsn",
-              content: dsnString,
-              mimetype: "text/plain",
-            },
-            {
-              path: "unrouted_pcb.svg",
-              content: pcbSvg,
-              mimetype: "image/svg+xml",
-            },
-            {
-              path: "unrouted_simple_route.json",
-              content: JSON.stringify(simpleRouteJson, null, 2),
-              mimetype: "application/json",
-            },
-          ]
-
-          // Upload each file
-          for (const file of files) {
-            await this.retryApiCall("samples/create_file", {
-              json: {
-                sample_id: sample.sample_id,
-                file_path: file.path,
-                mimetype: file.mimetype,
-                text_content: file.content,
-              },
-              headers: {
-                Authorization: `Bearer ${this.options.sessionToken}`,
-              },
-            })
-          }
-
+          await this.createAndUploadSample({ sampleNumber: sampleNum })
           this.emit("sample:finished", { sampleNumber: sampleNum })
-          break // Exit the retry loop on success
+          break // Exit loop if successful
         } catch (error) {
           attempt++
           this.emit("sample:error", {
@@ -150,7 +90,7 @@ export class SnippetDatasetUploader
             attempts: attempt,
           })
           if (attempt === maxAttempts) {
-            throw error
+            throw error // Give up after maxAttempts
           }
         }
       }
@@ -168,17 +108,68 @@ export class SnippetDatasetUploader
     })
   }
 
-  private async retryApiCall<T>(endpoint: string, options: any): Promise<T> {
-    const maxAttempts = 3
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
-      try {
-        return await ky.post(endpoint, options).json<T>()
-      } catch (error) {
-        if (attempt === maxAttempts) {
-          throw error
-        }
-      }
+  private async createAndUploadSample({
+    sampleNumber,
+  }: { sampleNumber: number }) {
+    const { sample } = await ky
+      .post<{ sample: Sample }>("samples/create", {
+        json: {
+          dataset_id: this.dataset!.dataset_id,
+          sample_number: sampleNumber,
+        },
+        headers: {
+          Authorization: `Bearer ${this.options.sessionToken}`,
+        },
+      })
+      .json()
+
+    // Generate all the sample files
+    const { circuitJson, pcbSvg, simpleRouteJson, dsnString } =
+      await createSample(
+        "keyboard", // TODO: Make this configurable
+        sampleNumber,
+        `@tsci/${this.options.snippetName.replace("/", ".")}`,
+      )
+
+    // Create each file
+    const files = [
+      {
+        path: "unrouted_circuit.json",
+        content: JSON.stringify(circuitJson, null, 2),
+        mimetype: "application/json",
+      },
+      {
+        path: "unrouted.dsn",
+        content: dsnString,
+        mimetype: "text/plain",
+      },
+      {
+        path: "unrouted_pcb.svg",
+        content: pcbSvg,
+        mimetype: "image/svg+xml",
+      },
+      {
+        path: "unrouted_simple_route.json",
+        content: JSON.stringify(simpleRouteJson, null, 2),
+        mimetype: "application/json",
+      },
+    ]
+
+    // Upload each file
+    for (const file of files) {
+      await ky
+        .post("samples/create_file", {
+          json: {
+            sample_id: sample.sample_id,
+            file_path: file.path,
+            mimetype: file.mimetype,
+            text_content: file.content,
+          },
+          headers: {
+            Authorization: `Bearer ${this.options.sessionToken}`,
+          },
+        })
+        .json()
     }
-    throw new Error("Retry attempts exceeded") // Ensure a return value or an error is always provided
   }
 }
