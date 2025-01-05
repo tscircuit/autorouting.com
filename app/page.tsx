@@ -10,7 +10,7 @@ export default function Home() {
           <Image
             alt="autorouting text logo"
             src={mainLogo}
-            className="w-64 rounded-md borde"
+            className="w-64 rounded-md"
           />
         </div>
         <p className="text-lg mb-4 text-gray-700">
