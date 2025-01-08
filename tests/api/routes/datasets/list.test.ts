@@ -14,6 +14,7 @@ it("GET /datasets/list", async () => {
       "dataset_id": "dataset-1",
       "dataset_name": "custom-keyboards",
       "dataset_name_with_owner": "testuser/custom-keyboards",
+      "description_md": "A dataset of custom keyboards based on [this snippet](https://tscircuit.com/seveibar/keyboard-sample)",
       "max_layer_count": 2,
       "median_trace_count": 10,
       "owner_name": "testuser",
