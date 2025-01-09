@@ -23,7 +23,7 @@
     },
     // Include the DOM types
     "lib": ["es2022", "dom", "dom.iterable"],
-    "incremental": true,
+    "incremental": false,
     "plugins": [
       {
         "name": "next"
