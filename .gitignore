@@ -180,3 +180,6 @@ dist
 .winterspec
 
 .vscode
+
+.yalc
+yalc.*

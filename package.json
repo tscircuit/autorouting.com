@@ -6,6 +6,9 @@
   "bun": {
     "autorouting": "./dist/cli.js"
   },
+  "bin": {
+      "autorouting": "./dist/cli.js"
+  },
   "scripts": {
     "start": "concurrently \"npm run start:next\" \"npm run start:api\"",
     "start:next": "next dev -p 3090",
@@ -96,6 +99,7 @@
     "recharts": "^2.15.0",
     "sonner": "^1.7.1",
     "tailwindcss-animate": "^1.0.7",
+    "tempy": "^3.1.0",
     "vaul": "^1.1.2",
     "winterspec": "^0.0.99",
     "zod": "^3.24.1",
