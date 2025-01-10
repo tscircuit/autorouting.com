@@ -3,9 +3,6 @@
   "module": "dist/index.js",
   "type": "module",
   "version": "0.0.1",
-  "bun": {
-    "autorouting": "./dist/cli.js"
-  },
   "bin": {
       "autorouting": "./dist/cli.js"
   },

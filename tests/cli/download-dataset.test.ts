@@ -1,7 +1,7 @@
 import { it, expect } from "bun:test"
 import { getTestServer } from "tests/fixtures/get-test-server"
 import { temporaryDirectory } from "tempy"
-import { downloadDatasetToDirectory } from "@/cli/download-dataset"
+import { downloadDatasetToDirectory } from "@/cli/download/download-dataset"
 import { existsSync, readFileSync } from "fs"
 import { join } from "path"
 
