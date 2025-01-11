@@ -68,5 +68,18 @@ export async function downloadDatasetToDirectory({
     }
   }
 
+  // Create package.json for the dataset
+  const packageJsonContent = {
+    name: `@autorouting/${author}.${datasetName}`,
+    version: "1.0.0",
+    description: "Auto-generated package.json for autorouting dataset",
+    license: "MIT"
+  };
+
+  await writeFile(
+    join(outputPath, "package.json"),
+    JSON.stringify(packageJsonContent, null, 2)
+  );
+
   return outputPath
 }

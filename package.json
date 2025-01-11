@@ -4,7 +4,7 @@
   "type": "module",
   "version": "0.0.1",
   "bin": {
-      "autorouting": "./dist/cli.js"
+    "autorouting": "./dist/cli.js"
   },
   "scripts": {
     "start": "concurrently \"npm run start:next\" \"npm run start:api\"",
@@ -23,7 +23,9 @@
     "@tscircuit/core": "^0.0.231",
     "@tscircuit/infgrid-ijump-astar": "^0.0.26",
     "@types/bun": "latest",
+    "@types/configstore": "^6.0.2",
     "@types/events": "^3.0.3",
+    "@types/node": "^22.10.5",
     "@types/react": "^18.3.3",
     "autoprefixer": "^10.4.14",
     "circuit-to-svg": "^0.0.95",
