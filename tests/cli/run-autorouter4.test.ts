@@ -37,7 +37,6 @@ describe("autorouter run", () => {
       "outputs",
       "freerouting_routed_circuit.json",
     )
-    console.log(outputPath)
     expect(existsSync(outputPath)).toBe(true)
 
     // Verify output content
