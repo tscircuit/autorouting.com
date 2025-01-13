@@ -23,38 +23,38 @@ export async function runAutorouter({
   isDataset = false,
   serverUrl = "https://registry-api.tscircuit.com",
 }: RunAutorouterOptions) {
-  if (isDataset) {
-    debug(`Processing dataset: ${inputPath}`)
-
-    // Get all sample folders
-    const sampleFolders = await glob("sample*/", {
-      // Added trailing slash to match directories
-      cwd: inputPath,
-      absolute: true,
-    })
-
-    debug(`Found ${sampleFolders.length} sample folders`)
-
-    // Process each sample folder
-    for (const sampleFolder of sampleFolders) {
-      // Check if this sample folder has an unrouted_circuit.json
-      const unroutedCircuitPath = join(sampleFolder, "unrouted_circuit.json")
-
-      try {
-        const stats = await stat(unroutedCircuitPath)
-        if (stats.isFile()) {
-          debug(`Processing sample folder: ${sampleFolder}`)
-
-          // Process the circuit file
-          await processCircuitFile(unroutedCircuitPath, autorouter, serverUrl)
-        }
-      } catch (error) {
-        debug(`Skipping ${sampleFolder} - no unrouted_circuit.json found`)
-        continue
-      }
-    }
-  } else {
+  if (!isDataset) {
     debug(`Processing single file: ${inputPath}`)
     await processCircuitFile(inputPath, autorouter, serverUrl)
+    return
+  }
+  debug(`Processing dataset: ${inputPath}`)
+
+  // Get all sample folders
+  const sampleFolders = await glob("sample*/", {
+    // Added trailing slash to match directories
+    cwd: inputPath,
+    absolute: true,
+  })
+
+  debug(`Found ${sampleFolders.length} sample folders`)
+
+  // Process each sample folder
+  for (const sampleFolder of sampleFolders) {
+    // Check if this sample folder has an unrouted_circuit.json
+    const unroutedCircuitPath = join(sampleFolder, "unrouted_circuit.json")
+
+    try {
+      const stats = await stat(unroutedCircuitPath)
+      if (stats.isFile()) {
+        debug(`Processing sample folder: ${sampleFolder}`)
+
+        // Process the circuit file
+        await processCircuitFile(unroutedCircuitPath, autorouter, serverUrl)
+      }
+    } catch (error) {
+      debug(`Skipping ${sampleFolder} - no unrouted_circuit.json found`)
+      continue
+    }
   }
 }
