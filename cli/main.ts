@@ -5,6 +5,7 @@ import { fileURLToPath } from "node:url"
 import { dirname } from "node:path"
 import { datasetDownloadCommand } from "./download/register"
 import { autorouterRunCommand } from "./run/register"
+import { authCommand } from "./auth/register"
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -21,5 +22,6 @@ program
 // Add commands here
 datasetDownloadCommand(program)
 autorouterRunCommand(program)
+authCommand(program)
 
 program.parse(process.argv)
