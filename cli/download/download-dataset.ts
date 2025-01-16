@@ -2,6 +2,7 @@ import type { KyInstance } from "ky"
 import { mkdir, writeFile } from "fs/promises"
 import { join } from "path/posix"
 import { ky as defaultKy } from "@/lib/ky"
+import { createPackageJson } from "./create-package-json"
 interface DownloadDatasetOptions {
   datasetNameWithOwner: string
   outputDirectory: string
@@ -27,6 +28,9 @@ export async function downloadDatasetToDirectory({
 
   // Create the main dataset directory
   await mkdir(outputPath, { recursive: true })
+  if (author && datasetName) {
+    await createPackageJson(outputPath, { author, datasetName })
+  }
 
   // Download each sample
   for (
@@ -52,7 +56,6 @@ export async function downloadDatasetToDirectory({
     const sample = sampleResponse.sample
     const sampleDir = join(outputPath, `sample${sampleNumber}`)
     await mkdir(sampleDir, { recursive: true })
-
     // Download each file for the sample
     for (const filePath of sample.available_file_paths) {
       const fileContent = await ky
@@ -63,7 +66,11 @@ export async function downloadDatasetToDirectory({
           },
         })
         .text()
-
+      if (filePath.includes("_routed")) {
+        await mkdir(join(sampleDir, "outputs"), { recursive: true })
+        await writeFile(join(sampleDir, "outputs", filePath), fileContent)
+        continue
+      }
       await writeFile(join(sampleDir, filePath), fileContent)
     }
   }
