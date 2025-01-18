@@ -5,7 +5,7 @@ import { existsSync, readFileSync } from "fs"
 import { join } from "path/posix"
 import { writeFile, mkdir } from "fs/promises"
 import type { AnyCircuitElement } from "circuit-json"
-import unroutedCircuit from "../fixtures/unrouted_circuit.json"
+import unroutedCircuit from "../../fixtures/unrouted_circuit.json"
 
 const createMockCircuitFile = async (dir: string) => {
   const mockCircuit = unroutedCircuit
