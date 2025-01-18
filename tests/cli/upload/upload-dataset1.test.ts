@@ -12,7 +12,7 @@ test("should upload dataset outputs to the server", async () => {
   // Create a test dataset structure
   const datasetDir = join(tempDir, "testuser.custom-keyboards")
   const sampleDirs = ["sample1", "sample2"]
-  
+
   for (const sampleDir of sampleDirs) {
     const outputsDir = join(datasetDir, sampleDir, "outputs")
     await mkdir(outputsDir, { recursive: true })
@@ -39,7 +39,11 @@ test("should upload dataset outputs to the server", async () => {
   })
 
   // Verify uploads for each sample
-  for (let sampleNumber = 1; sampleNumber <= sampleDirs.length; sampleNumber++) {
+  for (
+    let sampleNumber = 1;
+    sampleNumber <= sampleDirs.length;
+    sampleNumber++
+  ) {
     const response = await ky
       .get("samples/view_file", {
         searchParams: {
@@ -51,10 +55,15 @@ test("should upload dataset outputs to the server", async () => {
       .text()
 
     const downloadedFile = JSON.parse(response)
-    expect(downloadedFile).toEqual([{
-      type: "pcb_trace",
-      points: [[0, 0], [1, 1]],
-      width: 0.5,
-    }])
+    expect(downloadedFile).toEqual([
+      {
+        type: "pcb_trace",
+        points: [
+          [0, 0],
+          [1, 1],
+        ],
+        width: 0.5,
+      },
+    ])
   }
 })

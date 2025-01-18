@@ -33,7 +33,7 @@ export default withRouteSpec({
   const sampleFile = ctx.db
     .getState()
     .sample_files.find(
-      (f) => f.sample_id === sample_id && f.file_path === file_path
+      (f) => f.sample_id === sample_id && f.file_path === file_path,
     )
 
   if (!sampleFile) {
@@ -46,7 +46,7 @@ export default withRouteSpec({
   // Remove the file from the database
   ctx.db.setState((state) => {
     state.sample_files = state.sample_files.filter(
-      (f) => !(f.sample_id === sample_id && f.file_path === file_path)
+      (f) => !(f.sample_id === sample_id && f.file_path === file_path),
     )
     return state
   })

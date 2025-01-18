@@ -33,7 +33,7 @@ export default withRouteSpec({
   const existingFile = ctx.db
     .getState()
     .sample_files.find(
-      (f) => f.sample_id === sample_id && f.file_path === file_path
+      (f) => f.sample_id === sample_id && f.file_path === file_path,
     )
 
   if (!existingFile) {
@@ -46,7 +46,7 @@ export default withRouteSpec({
   // Update the file
   ctx.db.setState((state) => {
     const fileIndex = state.sample_files.findIndex(
-      (f) => f.sample_id === sample_id && f.file_path === file_path
+      (f) => f.sample_id === sample_id && f.file_path === file_path,
     )
     if (fileIndex !== -1) {
       state.sample_files[fileIndex] = {
@@ -62,7 +62,7 @@ export default withRouteSpec({
   const updatedFile = ctx.db
     .getState()
     .sample_files.find(
-      (f) => f.sample_id === sample_id && f.file_path === file_path
+      (f) => f.sample_id === sample_id && f.file_path === file_path,
     )!
 
   return ctx.json({ sample_file: updatedFile })

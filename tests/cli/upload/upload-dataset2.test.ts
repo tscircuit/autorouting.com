@@ -14,13 +14,18 @@ test("should skip already uploaded files", async () => {
   for (const sampleDir of ["sample1", "sample2"]) {
     const outputsDir = join(datasetDir, sampleDir, "outputs")
     await mkdir(outputsDir, { recursive: true })
-    
+
     await writeFile(
       join(outputsDir, "freerouting_routed_circuit.json"),
-      JSON.stringify([{
-        type: "pcb_trace",
-        points: [[0, 0], [1, 1]],
-      }]),
+      JSON.stringify([
+        {
+          type: "pcb_trace",
+          points: [
+            [0, 0],
+            [1, 1],
+          ],
+        },
+      ]),
     )
   }
 
@@ -33,10 +38,15 @@ test("should skip already uploaded files", async () => {
   // Modify sample2 file
   await writeFile(
     join(datasetDir, "sample2", "outputs", "freerouting_routed_circuit.json"),
-    JSON.stringify([{
-      type: "pcb_trace",
-      points: [[2, 2], [3, 3]],
-    }]),
+    JSON.stringify([
+      {
+        type: "pcb_trace",
+        points: [
+          [2, 2],
+          [3, 3],
+        ],
+      },
+    ]),
   )
 
   // Second upload should skip existing files
@@ -65,8 +75,13 @@ test("should skip already uploaded files", async () => {
     })
     .text()
 
-  expect(JSON.parse(sample1Response)).toEqual([{
-    type: "pcb_trace",
-    points: [[0, 0], [1, 1]],
-  }])
+  expect(JSON.parse(sample1Response)).toEqual([
+    {
+      type: "pcb_trace",
+      points: [
+        [0, 0],
+        [1, 1],
+      ],
+    },
+  ])
 })
