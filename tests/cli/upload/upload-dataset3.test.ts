@@ -4,8 +4,12 @@ import { temporaryDirectory } from "tempy"
 import { uploadDatasetOutputs } from "@/cli/upload/upload-dataset-outputs"
 import { mkdir } from "fs/promises"
 import { join } from "path/posix"
+import Configstore from "configstore"
 
 test("should handle invalid dataset directory", async () => {
+  // Setup mock authentication
+  const mockConfig = new Configstore("tscircuit")
+  mockConfig.get = () => "test-mock-token"
   const { ky } = await getTestServer()
   const tempDir = temporaryDirectory()
 

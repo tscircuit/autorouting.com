@@ -4,8 +4,12 @@ import { temporaryDirectory } from "tempy"
 import { uploadDatasetOutputs } from "@/cli/upload/upload-dataset-outputs"
 import { mkdir, writeFile } from "fs/promises"
 import { join } from "path/posix"
+import Configstore from "configstore"
 
 test("should skip already uploaded files", async () => {
+  // Setup mock authentication
+  const mockConfig = new Configstore("tscircuit")
+  mockConfig.get = () => "test-mock-token"
   const { ky } = await getTestServer()
   const tempDir = temporaryDirectory()
   const datasetDir = join(tempDir, "testuser.custom-keyboards")
