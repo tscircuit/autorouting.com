@@ -17,6 +17,18 @@ export const getTestServer = async (): Promise<TestFixture> => {
   const testInstanceId = Math.random().toString(36).substring(2, 15)
   const testDbName = `testdb${testInstanceId}`
 
+  const testUserAuthToken = await new jose.SignJWT({
+    github_username: "testuser",
+    account_id: "test-account-id",
+    session_id: "test-session-id",
+  })
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime("24h")
+    .sign(new TextEncoder().encode("1234"))
+
+  process.env.TSCIRCUIT_AUTH_TOKEN = testUserAuthToken
+
   const { server, db } = await startServer({
     port,
     testDbName,
@@ -53,15 +65,7 @@ export const getTestServer = async (): Promise<TestFixture> => {
   const testUserKy = defaultKy.create({
     prefixUrl: url,
     headers: {
-      Authorization: `Bearer ${await new jose.SignJWT({
-        github_username: "testuser",
-        account_id: "test-account-id",
-        session_id: "test-session-id",
-      })
-        .setProtectedHeader({ alg: "HS256" })
-        .setIssuedAt()
-        .setExpirationTime("24h")
-        .sign(new TextEncoder().encode("1234"))}`,
+      Authorization: `Bearer ${testUserAuthToken}`,
     },
     hooks: {
       afterResponse: [prettyResponseErrorHook],
