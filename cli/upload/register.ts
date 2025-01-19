@@ -5,7 +5,8 @@ export const registerUploadDatasetCommand = (program: Command) => {
   program
     .command("upload")
     .description("Upload commands")
-    .command("dataset <dataset-dir>")
+    .option("-d,--dataset", "flag to upload dataset routes")
+    .argument("<dataset-directory>", "Path to dataset directory")
     .description("Upload dataset routes solutions to the database")
     .action(async (datasetDirectory) => {
       try {

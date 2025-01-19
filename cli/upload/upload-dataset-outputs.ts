@@ -21,7 +21,7 @@ export async function uploadDatasetOutputs({
   const cliConfig = new Configstore("tscircuit")
   const sessionToken = cliConfig.get("sessionToken")
 
-  if (!sessionToken) {
+  if (!sessionToken && !process.env.TSCIRCUIT_TESTS_AUTH) {
     throw new Error(
       "Authentication required. Please run 'tsci auth login' to authenticate.",
     )
@@ -52,7 +52,6 @@ export async function uploadDatasetOutputs({
       },
     })
     .json<{ dataset: { dataset_id: string } }>()
-  console.log("dataset", dataset)
 
   // Find all sample directories
   const sampleDirs = await glob("sample*/", {
@@ -66,24 +65,28 @@ export async function uploadDatasetOutputs({
 
     // Check for output files
     const outputsDir = join(sampleDir, "outputs")
-    const outputFiles = await glob("*_routed_circuit.json", {
+    const outputFiles = await glob("*_routed*", {
       cwd: outputsDir,
       absolute: true,
     })
 
     for (const outputFile of outputFiles) {
-      const fileName =
-        outputFile.split("outputs/").pop() || basename(outputFile)
+      // Extract just the filename from outputs directory
+      const relativeFilePath = outputFile
+        .substring(outputsDir.length + 1)
+        .replace(/\\/g, "/")
+      const newFileContent = await readFile(outputFile, "utf8")
 
-      console.log("fileName", fileName)
-      // Check if file already exists
+      debug(`Processing file: ${relativeFilePath} for sample ${sampleNumber}`)
+
+      // Check if file already exists and compare contents
       try {
-        await ky
+        const existingFileContent = await ky
           .get("samples/view_file", {
             searchParams: {
               dataset_id: dataset.dataset.dataset_id,
               sample_number: sampleNumber,
-              file_path: `freerouting_routed_circuit.json`,
+              file_path: relativeFilePath,
             },
             headers: {
               Authorization: `Bearer ${sessionToken}`,
@@ -91,19 +94,82 @@ export async function uploadDatasetOutputs({
           })
           .text()
 
+        // Compare the contents
+        if (existingFileContent === newFileContent) {
+          debug(
+            `File exists with same content: outputs/${relativeFilePath} for sample ${sampleNumber}, skipping`,
+          )
+          continue
+        }
+
         debug(
-          `File already exists: outputs/${fileName} for sample ${sampleNumber}`,
+          `File exists but content differs: outputs/${relativeFilePath} for sample ${sampleNumber}, updating`,
         )
-        continue
       } catch (error) {
-        // File doesn't exist, proceed with upload
+        debug(
+          `File doesn't exist: outputs/${relativeFilePath} for sample ${sampleNumber}`,
+        )
       }
 
-      const fileContent = await readFile(outputFile, "utf8")
-
-      // First get the sample ID using dataset_id and sample_number
+      // Get the sample and its available files
       const { sample } = await ky
-        .get<{ sample: Sample }>("samples/get", {
+        .get<{ sample: Sample & { available_file_paths: string[] } }>(
+          "samples/get",
+          {
+            searchParams: {
+              dataset_id: dataset.dataset.dataset_id,
+              sample_number: sampleNumber,
+            },
+            headers: {
+              Authorization: `Bearer ${sessionToken}`,
+            },
+          },
+        )
+        .json()
+
+      // Check if file exists
+      let fileExists = false
+      try {
+        const existingFile = await ky
+          .get("samples/get_file", {
+            searchParams: {
+              sample_id: sample.sample_id,
+              file_path: relativeFilePath,
+            },
+            headers: {
+              Authorization: `Bearer ${sessionToken}`,
+            },
+          })
+          .json()
+        fileExists = true
+      } catch (error) {
+        debug(`File doesn't exist, will create new: ${relativeFilePath}`)
+      }
+
+      // Create or update the file based on existence
+      const endpoint = fileExists
+        ? "samples/update_file"
+        : "samples/create_file"
+      await ky.post(endpoint, {
+        json: {
+          sample_id: sample.sample_id,
+          file_path: relativeFilePath,
+          mimetype: "application/json",
+          text_content: newFileContent,
+        },
+        headers: {
+          Authorization: `Bearer ${sessionToken}`,
+        },
+      })
+
+      debug(`Uploaded: outputs/${relativeFilePath} for sample ${sampleNumber}`)
+    }
+
+    // Check for files that need to be deleted
+    const { sample } = await ky
+      .get<{ sample: Sample & { available_file_paths: string[] } }>(
+        "samples/get",
+        {
           searchParams: {
             dataset_id: dataset.dataset.dataset_id,
             sample_number: sampleNumber,
@@ -111,23 +177,37 @@ export async function uploadDatasetOutputs({
           headers: {
             Authorization: `Bearer ${sessionToken}`,
           },
-        })
-        .json()
+        },
+      )
+      .json()
 
-      // Then create the file for that sample
-      await ky.post("samples/create_file", {
-        json: {
+    // Get list of files that should exist (from local directory)
+    const localFiles = await glob("*_routed*", {
+      cwd: outputsDir,
+      absolute: false,
+    })
+
+    // Find files that exist remotely but not locally
+    const filesToDelete = sample.available_file_paths.filter(
+      (remotePath) =>
+        remotePath.includes("_routed") && !localFiles.includes(remotePath),
+    )
+
+    // Delete each file that no longer exists locally
+    for (const fileToDelete of filesToDelete) {
+      debug(
+        `Deleting remote file that no longer exists locally: ${fileToDelete}`,
+      )
+      await ky.delete("samples/delete_file", {
+        searchParams: {
           sample_id: sample.sample_id,
-          file_path: `freerouting_routed_circuit.json`,
-          mimetype: "application/json",
-          text_content: fileContent,
+          file_path: fileToDelete,
         },
         headers: {
           Authorization: `Bearer ${sessionToken}`,
         },
       })
-
-      debug(`Uploaded: outputs/${fileName} for sample ${sampleNumber}`)
+      debug(`Deleted remote file: ${fileToDelete}`)
     }
   }
 }

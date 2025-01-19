@@ -13,6 +13,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
+      -name: set environment variables
+       env:
+         TSCIRCUIT_TESTS_AUTH: true
+
       - name: Setup bun
         uses: oven-sh/setup-bun@v1
         with:

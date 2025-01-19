@@ -179,7 +179,8 @@ dist
 # Winterspec
 .winterspec
 
-.vscode
+.vscode/
+.vscode/*
 
 .yalc
 yalc.*
