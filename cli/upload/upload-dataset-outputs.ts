@@ -19,8 +19,8 @@ export async function uploadDatasetOutputs({
   ky = defaultKy,
 }: UploadDatasetOutputsOptions) {
   const cliConfig = new Configstore("tscircuit")
-  const sessionToken = cliConfig.get("sessionToken")
-
+  const sessionToken =
+    cliConfig.get("sessionToken") ?? process.env.TSCIRCUIT_AUTH_TOKEN
   if (!sessionToken) {
     throw new Error(
       "Authentication required. Please run 'tsci auth login' to authenticate.",
