@@ -4,7 +4,7 @@ import { runAutorouter } from "@/cli/run/run-autorouter"
 import { existsSync } from "fs"
 import { join } from "path/posix"
 import { writeFile, mkdir } from "fs/promises"
-import unroutedCircuit from "../fixtures/unrouted_circuit.json"
+import unroutedCircuit from "tests/fixtures/unrouted_circuit.json"
 
 const createMockCircuitFile = async (dir: string) => {
   const mockCircuit = unroutedCircuit
