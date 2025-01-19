@@ -10,7 +10,7 @@ export default withRouteSpec({
   auth: "session",
   jsonResponse: z.object({
     success: z.boolean(),
-    delete_result: z.object({
+    delete_sample_file_result: z.object({
       files_deleted: z.number(),
     }),
   }),
@@ -53,7 +53,7 @@ export default withRouteSpec({
 
   return ctx.json({
     success: true,
-    delete_result: {
+    delete_sample_file_result: {
       files_deleted: 1,
     },
   })
