@@ -2,21 +2,21 @@ import { test, expect } from "bun:test"
 import { getTestServer } from "tests/fixtures/get-test-server"
 import { temporaryDirectory } from "tempy"
 import { uploadDatasetOutputs } from "@/cli/upload/upload-dataset-outputs"
-import { mkdir, writeFile, rm } from "fs/promises"
+import { mkdir, writeFile } from "fs/promises"
 import { join } from "path/posix"
 
-test("should delete remote files when local files are removed", async () => {
+test("should update files when content changes after upload", async () => {
   const { ky } = await getTestServer()
   const tempDir = temporaryDirectory()
   const datasetDir = join(tempDir, "testuser.custom-keyboards")
 
-  // Create sample with output file
+  // Create sample with initial output file
   const outputsDir = join(datasetDir, "sample1", "outputs")
   await mkdir(outputsDir, { recursive: true })
 
-  const initialFile = join(outputsDir, "freerouting_routed_circuit.json")
+  const outputFile = join(outputsDir, "freerouting_routed_circuit.json")
   await writeFile(
-    initialFile,
+    outputFile,
     JSON.stringify([
       {
         type: "pcb_trace",
@@ -34,10 +34,22 @@ test("should delete remote files when local files are removed", async () => {
     ky,
   })
 
-  // Delete the local file
-  await rm(initialFile)
+  // Modify the file content
+  await writeFile(
+    outputFile,
+    JSON.stringify([
+      {
+        type: "pcb_trace",
+        points: [
+          [5, 5],
+          [10, 10],
+        ],
+        width: 0.8,
+      },
+    ]),
+  )
 
-  // Second upload should delete the remote file
+  // Second upload should update the file
   await uploadDatasetOutputs({
     datasetDirectory: datasetDir,
     ky,
@@ -52,16 +64,25 @@ test("should delete remote files when local files are removed", async () => {
     })
     .json<{ dataset: { dataset_id: string } }>()
 
-  // Verify file was deleted
-  await expect(
-    ky
-      .get("samples/view_file", {
-        searchParams: {
-          dataset_id: dataset.dataset_id,
-          sample_number: 1,
-          file_path: "freerouting_routed_circuit.json",
-        },
-      })
-      .text(),
-  ).rejects.toThrow()
+  // Verify file was updated with new content
+  const response = await ky
+    .get("samples/view_file", {
+      searchParams: {
+        dataset_id: dataset.dataset_id,
+        sample_number: 1,
+        file_path: "freerouting_routed_circuit.json",
+      },
+    })
+    .text()
+
+  expect(JSON.parse(response)).toEqual([
+    {
+      type: "pcb_trace",
+      points: [
+        [5, 5],
+        [10, 10],
+      ],
+      width: 0.8,
+    },
+  ])
 })
