@@ -1,11 +1,10 @@
 import type { KyInstance } from "ky"
-import { readFile, writeFile, mkdir } from "fs/promises"
-import { join, dirname } from "path/posix"
+import { stat } from "fs/promises"
+import { join } from "path/posix"
 import { glob } from "glob"
 import Debug from "debug"
-import { stat } from "fs/promises"
-import type { AnyCircuitElement } from "circuit-json"
 import { processCircuitFile } from "./process-circuit-file"
+import { processCircuitFileLocally } from "./process-circuit-file-locally"
 
 const debug = Debug("autorouting:cli/run/run-autorouter")
 
@@ -15,6 +14,7 @@ interface RunAutorouterOptions {
   isDataset?: boolean
   ky?: KyInstance
   serverUrl?: string
+  isLocal?: boolean
 }
 
 export async function runAutorouter({
@@ -22,10 +22,16 @@ export async function runAutorouter({
   autorouter,
   isDataset = false,
   serverUrl = "https://registry-api.tscircuit.com",
+  isLocal = false,
 }: RunAutorouterOptions) {
+  if (autorouter !== "freerouting") {
+    throw new Error(`Unsupported autorouter: ${autorouter}`)
+  }
   if (!isDataset) {
     debug(`Processing single file: ${inputPath}`)
-    await processCircuitFile(inputPath, autorouter, serverUrl)
+    isLocal
+      ? await processCircuitFileLocally(inputPath)
+      : await processCircuitFile({ inputPath, autorouter, serverUrl })
     return
   }
   debug(`Processing dataset: ${inputPath}`)
@@ -50,7 +56,13 @@ export async function runAutorouter({
         debug(`Processing sample folder: ${sampleFolder}`)
 
         // Process the circuit file
-        await processCircuitFile(unroutedCircuitPath, autorouter, serverUrl)
+        isLocal
+          ? await processCircuitFileLocally(unroutedCircuitPath)
+          : await processCircuitFile({
+              inputPath: unroutedCircuitPath,
+              autorouter,
+              serverUrl,
+            })
       }
     } catch (error) {
       debug(`Skipping ${sampleFolder} - no unrouted_circuit.json found`)
