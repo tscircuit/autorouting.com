@@ -12,6 +12,11 @@ export const autorouterRunCommand = (program: Command) => {
       "freerouting",
     )
     .option("-d, --dataset", "Treat input path as a dataset directory", false)
+    .option(
+      "-l, --local",
+      "Run freerouting locally instead of using the server",
+      false,
+    )
     .action(async (inputPath, options) => {
       try {
         if (!options.dataset && !inputPath.endsWith(".json")) {
@@ -28,6 +33,7 @@ export const autorouterRunCommand = (program: Command) => {
           inputPath,
           autorouter: options.autorouter,
           isDataset: options.dataset,
+          isLocal: options.local,
         })
         console.log("Successfully completed autorouting")
       } catch (error) {

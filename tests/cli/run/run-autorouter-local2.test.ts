@@ -1,9 +1,10 @@
 import { expect, test } from "bun:test"
 import { temporaryDirectory } from "tempy"
 import { runAutorouter } from "@/cli/run/run-autorouter"
-import { existsSync } from "fs"
+import { existsSync, readFileSync } from "fs"
 import { join } from "path/posix"
 import { writeFile, mkdir } from "fs/promises"
+import type { AnyCircuitElement } from "circuit-json"
 import unroutedCircuit from "tests/fixtures/unrouted_circuit.json"
 
 const createMockCircuitFile = async (dir: string) => {
@@ -14,37 +15,30 @@ const createMockCircuitFile = async (dir: string) => {
   )
 }
 
-test("should handle dataset with missing circuit files", async () => {
+test("should run local autorouter on a dataset directory", async () => {
   // Create a temporary dataset directory structure
   const datasetDir = temporaryDirectory()
 
-  // Create sample folders - some with circuit files, some without
-  const samplesWithCircuit = ["sample1", "sample3"]
-  const samplesWithoutCircuit = ["sample2", "sample4"]
-
-  // Create folders with circuit files
-  for (const sampleDir of samplesWithCircuit) {
+  // Create multiple sample folders
+  const sampleDirs = ["sample1", "sample2"] // Reduced to 2 samples to speed up test
+  for (const sampleDir of sampleDirs) {
     const fullSamplePath = join(datasetDir, sampleDir)
     await mkdir(fullSamplePath, { recursive: true })
     await createMockCircuitFile(fullSamplePath)
   }
 
-  // Create folders without circuit files
-  for (const sampleDir of samplesWithoutCircuit) {
-    const fullSamplePath = join(datasetDir, sampleDir)
-    await mkdir(fullSamplePath, { recursive: true })
-  }
-
-  // Run autorouter
+  console.log("Running local autorouter with dataset directory:", datasetDir)
+  // Run command
   await runAutorouter({
     inputPath: datasetDir,
     autorouter: "freerouting",
     isDataset: true,
-    serverUrl: "https://registry-api.tscircuit.com",
+    serverUrl: "http://localhost:3000",
+    isLocal: true,
   })
 
-  // Check folders that should have output
-  for (const sampleDir of samplesWithCircuit) {
+  // Check each sample folder
+  for (const sampleDir of sampleDirs) {
     const outputPath = join(
       datasetDir,
       sampleDir,
@@ -52,16 +46,12 @@ test("should handle dataset with missing circuit files", async () => {
       "freerouting_routed_circuit.json",
     )
     expect(existsSync(outputPath)).toBe(true)
-  }
 
-  // Check folders that should not have output
-  for (const sampleDir of samplesWithoutCircuit) {
-    const outputPath = join(
-      datasetDir,
-      sampleDir,
-      "outputs",
-      "freerouting_routed_circuit.json",
+    const outputJson: AnyCircuitElement[] = JSON.parse(
+      readFileSync(outputPath, "utf8"),
     )
-    expect(existsSync(outputPath)).toBe(false)
+    expect(Array.isArray(outputJson)).toBe(true)
+    expect(outputJson.some((item) => item.type !== "pcb_trace")).toBe(true)
+    expect(outputJson.some((item) => item.type === "pcb_trace")).toBe(true)
   }
-}, 30000)
+}, 30000) // Increased timeout to 30 seconds

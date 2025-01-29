@@ -6,17 +6,22 @@ import type { AnyCircuitElement } from "circuit-json"
 
 const debug = Debug("autorouting:cli/run/process-circuit-file")
 
-export async function processCircuitFile(
-  circuitPath: string,
-  autorouter: string,
-  serverUrl: string,
-) {
-  debug(`Processing circuit file: ${circuitPath}`)
+export async function processCircuitFile({
+  inputPath,
+  autorouter,
+  serverUrl,
+}: {
+  inputPath: string
+  autorouter: string
+  serverUrl: string
+}) {
+  debug(`Processing circuit file: ${inputPath}`)
+
   const fetchWithDebug = (url: string, options: RequestInit) => {
     debug("fetching", url)
     return fetch(url, options)
   }
-  const circuitJson = await readFile(circuitPath, "utf8")
+  const circuitJson = await readFile(inputPath, "utf8")
   const circuit: AnyCircuitElement[] = JSON.parse(circuitJson)
 
   // Create autorouting job
@@ -28,7 +33,7 @@ export async function processCircuitFile(
         input_circuit_json: circuit,
         provider: autorouter,
         autostart: true,
-        display_name: circuitPath,
+        display_name: inputPath,
       }),
       headers: { "Content-Type": "application/json" },
     },
@@ -59,7 +64,7 @@ export async function processCircuitFile(
         },
       ).then((r) => r.json())
 
-      const sampleDir = dirname(circuitPath)
+      const sampleDir = dirname(inputPath)
       const outputsDir = join(sampleDir, "outputs")
       await mkdir(outputsDir, { recursive: true })
 

@@ -12,17 +12,18 @@ const createMockCircuitFile = async (dir: string) => {
     JSON.stringify(mockCircuit, null, 2),
   )
 }
-test("should handle autorouter errors gracefully", async () => {
+
+test("should handle local autorouter errors gracefully", async () => {
   const tempDir = temporaryDirectory()
   await createMockCircuitFile(tempDir)
   const inputPath = join(tempDir, "unrouted_circuit.json")
 
-  // Test with invalid autorouter name
   await expect(
     runAutorouter({
       inputPath,
       autorouter: "invalid_autorouter",
-      serverUrl: "https://registry-api.tscircuit.com",
+      serverUrl: "http://localhost:3000",
+      isLocal: true,
     }),
   ).rejects.toThrow()
 })

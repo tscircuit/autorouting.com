@@ -14,7 +14,8 @@ const createMockCircuitFile = async (dir: string) => {
   )
 }
 
-test("should handle dataset with missing circuit files", async () => {
+test("should handle dataset with missing circuit files using local server", async () => {
+  expect.assertions(4)
   // Create a temporary dataset directory structure
   const datasetDir = temporaryDirectory()
 
@@ -40,7 +41,8 @@ test("should handle dataset with missing circuit files", async () => {
     inputPath: datasetDir,
     autorouter: "freerouting",
     isDataset: true,
-    serverUrl: "https://registry-api.tscircuit.com",
+    serverUrl: "http://localhost:3000",
+    isLocal: true,
   })
 
   // Check folders that should have output
@@ -64,4 +66,4 @@ test("should handle dataset with missing circuit files", async () => {
     )
     expect(existsSync(outputPath)).toBe(false)
   }
-}, 30000)
+}, 30000) // Increase timeout to 30 seconds
