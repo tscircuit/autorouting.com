@@ -23,7 +23,6 @@ test("should run local autorouter on a single circuit file", async () => {
   await mkdir(sampleDir, { recursive: true })
   await createMockFiles(sampleDir)
   const inputPath = join(sampleDir, "unrouted_circuit.json")
-  console.log("inputPath", inputPath)
   // Run command
   await runAutorouter({
     inputPath,
