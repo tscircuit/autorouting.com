@@ -27,7 +27,6 @@ test("should run local autorouter on a dataset directory", async () => {
     await createMockCircuitFile(fullSamplePath)
   }
 
-  console.log("Running local autorouter with dataset directory:", datasetDir)
   // Run command
   await runAutorouter({
     inputPath: datasetDir,
