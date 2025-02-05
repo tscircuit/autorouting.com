@@ -13,7 +13,7 @@ export async function downloadDatasetToDirectory({
   datasetNameWithOwner,
   outputDirectory,
   ky = defaultKy,
-}: DownloadDatasetOptions): Promise<[string | null, Error | null]> {
+}: DownloadDatasetOptions): Promise<string> {
   const [author, datasetName] = datasetNameWithOwner.split("/")
   const outputPath = join(outputDirectory, `${author}.${datasetName}`)
 
@@ -28,12 +28,9 @@ export async function downloadDatasetToDirectory({
     .then((data) => [data, null])
     .catch((err) => [null, err])
   if (datasetError) {
-    return [
-      null,
-      new Error(
-        `Failed to fetch dataset "${datasetNameWithOwner}". Please check if the dataset exists and you have access to it. Original error: ${datasetError.message}`,
-      ),
-    ]
+    throw new Error(
+      `Failed to fetch dataset "${datasetNameWithOwner}". Please check if the dataset exists and you have access to it. Original error: ${datasetError.message}`,
+    )
   }
 
   // Create the main dataset directory
@@ -42,12 +39,9 @@ export async function downloadDatasetToDirectory({
     .catch((err) => [null, err])
 
   if (mkdirError) {
-    return [
-      null,
-      new Error(
-        `Failed to create dataset directory "${outputPath}". Original error: ${mkdirError.message}`,
-      ),
-    ]
+    throw new Error(
+      `Failed to create dataset directory "${outputPath}". Original error: ${mkdirError.message}`,
+    )
   }
 
   if (author && datasetName) {
@@ -59,12 +53,9 @@ export async function downloadDatasetToDirectory({
       .catch((err) => [null, err])
 
     if (packageJsonError) {
-      return [
-        null,
-        new Error(
-          `Failed to create package.json in "${outputPath}". Original error: ${packageJsonError.message}`,
-        ),
-      ]
+      throw new Error(
+        `Failed to create package.json in "${outputPath}". Original error: ${packageJsonError.message}`,
+      )
     }
   }
 
@@ -92,12 +83,9 @@ export async function downloadDatasetToDirectory({
       .catch((err) => [null, err])
 
     if (sampleError) {
-      return [
-        null,
-        new Error(
-          `Failed to fetch sample ${sampleNumber} for dataset "${datasetNameWithOwner}". Original error: ${sampleError.message}`,
-        ),
-      ]
+      throw new Error(
+        `Failed to fetch sample ${sampleNumber} for dataset "${datasetNameWithOwner}". Original error: ${sampleError.message}`,
+      )
     }
 
     const sample = sampleResponse.sample
@@ -110,12 +98,9 @@ export async function downloadDatasetToDirectory({
       .catch((err) => [null, err])
 
     if (sampleDirError) {
-      return [
-        null,
-        new Error(
-          `Failed to create directory for sample ${sampleNumber} at "${sampleDir}". Original error: ${sampleDirError.message}`,
-        ),
-      ]
+      throw new Error(
+        `Failed to create directory for sample ${sampleNumber} at "${sampleDir}". Original error: ${sampleDirError.message}`,
+      )
     }
 
     // Download each file for the sample
@@ -132,12 +117,9 @@ export async function downloadDatasetToDirectory({
         .catch((err) => [null, err])
 
       if (fileError) {
-        return [
-          null,
-          new Error(
-            `Failed to fetch file "${filePath}" for sample ${sampleNumber}. Original error: ${fileError.message}`,
-          ),
-        ]
+        throw new Error(
+          `Failed to fetch file "${filePath}" for sample ${sampleNumber}. Original error: ${fileError.message}`,
+        )
       }
 
       if (filePath.includes("_routed")) {
@@ -149,12 +131,9 @@ export async function downloadDatasetToDirectory({
           .catch((err) => [null, err])
 
         if (outputsDirError) {
-          return [
-            null,
-            new Error(
-              `Failed to create outputs directory for sample ${sampleNumber} at "${sampleDir}/outputs". Original error: ${outputsDirError.message}`,
-            ),
-          ]
+          throw new Error(
+            `Failed to create outputs directory for sample ${sampleNumber} at "${sampleDir}/outputs". Original error: ${outputsDirError.message}`,
+          )
         }
 
         const [writeOutputResult, writeError] = await writeFile(
@@ -165,12 +144,9 @@ export async function downloadDatasetToDirectory({
           .catch((err) => [null, err])
 
         if (writeError) {
-          return [
-            null,
-            new Error(
-              `Failed to write file "${filePath}" for sample ${sampleNumber}. Original error: ${writeError.message}`,
-            ),
-          ]
+          throw new Error(
+            `Failed to write file "${filePath}" for sample ${sampleNumber}. Original error: ${writeError.message}`,
+          )
         }
 
         continue
@@ -184,15 +160,12 @@ export async function downloadDatasetToDirectory({
         .catch((err) => [null, err])
 
       if (writeError) {
-        return [
-          null,
-          new Error(
-            `Failed to write file "${filePath}" for sample ${sampleNumber}. Original error: ${writeError.message}`,
-          ),
-        ]
+        throw new Error(
+          `Failed to write file "${filePath}" for sample ${sampleNumber}. Original error: ${writeError.message}`,
+        )
       }
     }
   }
 
-  return [outputPath, null]
+  return outputPath
 }

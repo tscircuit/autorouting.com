@@ -12,14 +12,10 @@ export const datasetDownloadCommand = (program: Command) => {
     )
     .option("-o, --output <directory>", "Output directory", cwd())
     .action(async (datasetName, options) => {
-      const [outputPath, error] = await downloadDatasetToDirectory({
+      const outputPath = await downloadDatasetToDirectory({
         datasetNameWithOwner: datasetName,
         outputDirectory: options.output,
       })
-
-      if (error) {
-        throw error
-      }
 
       console.log(`Successfully downloaded dataset to: ${outputPath}`)
     })

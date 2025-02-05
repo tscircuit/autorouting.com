@@ -9,21 +9,15 @@ describe("downloadDatasetToDirectory error cases", () => {
     const { ky } = await getTestServer()
     const tempDir = temporaryDirectory()
 
-    const [result, error] = await downloadDatasetToDirectory({
-      datasetNameWithOwner: "nonexistent/dataset",
-      outputDirectory: tempDir,
-      ky,
-    })
-
-    expect(result).toBe(null)
-    expect(error).toBeDefined()
-    expect(error?.message).toContain(
-      'Failed to fetch dataset "nonexistent/dataset"',
+    await expect(
+      downloadDatasetToDirectory({
+        datasetNameWithOwner: "nonexistent/dataset",
+        outputDirectory: tempDir,
+        ky,
+      }),
+    ).rejects.toThrow(
+      /Failed to fetch dataset "nonexistent\/dataset".*Please check if the dataset exists and you have access to it.*Original error/,
     )
-    expect(error?.message).toContain(
-      "Please check if the dataset exists and you have access to it",
-    )
-    expect(error?.message).toContain("Original error")
   })
 
   it("should return error for invalid output directory", async () => {
@@ -38,30 +32,25 @@ describe("downloadDatasetToDirectory error cases", () => {
       "fail",
     )
 
-    const [result, error] = await downloadDatasetToDirectory({
-      datasetNameWithOwner: "testuser/custom-keyboards",
-      outputDirectory: invalidDir,
-      ky,
-    })
-
-    expect(result).toBe(null)
-    expect(error).toBeDefined()
-    expect(error?.message).toContain("Failed to create dataset directory")
-    expect(error?.message).toContain("Original error")
+    await expect(
+      downloadDatasetToDirectory({
+        datasetNameWithOwner: "testuser/custom-keyboards",
+        outputDirectory: invalidDir,
+        ky,
+      }),
+    ).rejects.toThrow(/Failed to create dataset directory.*Original error/)
   })
 
   it("should return error for failed file download", async () => {
     const tempDir = temporaryDirectory()
 
-    const [result, error] = await downloadDatasetToDirectory({
-      datasetNameWithOwner: "testuser/custom-keyboards",
-      outputDirectory: tempDir,
-    })
-
-    expect(result).toBe(null)
-    expect(error).toBeDefined()
-    expect(error?.message).toContain(
-      'Failed to fetch dataset "testuser/custom-keyboards". Please check if the dataset exists and you have access to it. Original error: Unable to connect. Is the computer able to access the url?',
+    await expect(
+      downloadDatasetToDirectory({
+        datasetNameWithOwner: "testuser/custom-keyboards",
+        outputDirectory: tempDir,
+      }),
+    ).rejects.toThrow(
+      /Failed to fetch dataset "testuser\/custom-keyboards".*Please check if the dataset exists and you have access to it.*Original error/,
     )
   })
 })
