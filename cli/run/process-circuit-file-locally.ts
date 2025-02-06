@@ -8,7 +8,6 @@ import {
   type DsnPcb,
   type DsnSession,
 } from "dsn-converter"
-import { glob } from "glob"
 import Debug from "debug"
 import type { AnyCircuitElement } from "circuit-json"
 
@@ -17,66 +16,164 @@ const debug = Debug("autorouting:cli/run/local-freerouting")
 export async function processCircuitFileLocally(inputPath: string) {
   debug(`Processing circuit file locally: ${inputPath}`)
 
-  const sampleDir = dirname(inputPath)
-  let dsnPath: string
-  let circuitWithoutTraces: AnyCircuitElement[] | undefined
+  const [result, error] = await (async () => {
+    const sampleDir = dirname(inputPath)
+    let dsnPath: string
+    let circuitWithoutTraces: AnyCircuitElement[] | undefined
 
-  // Check if input is DSN or JSON
-  if (inputPath.toLowerCase().endsWith(".dsn")) {
-    dsnPath = inputPath
-    // For DSN files, we don't need to do initial conversion
-  } else if (inputPath.toLowerCase().endsWith(".json")) {
-    // Assume JSON file
-    // Read and parse the input circuit
-    const circuitJson = await readFile(inputPath, "utf8")
-    const circuit: AnyCircuitElement[] = JSON.parse(circuitJson)
+    // Check if input is DSN or JSON
+    if (
+      !inputPath.toLowerCase().endsWith(".dsn") &&
+      !inputPath.toLowerCase().endsWith(".json")
+    ) {
+      return [
+        null,
+        new Error(`Unsupported file format for input file: ${inputPath}`),
+      ] as const
+    }
 
-    // Filter out any existing pcb_traces from the original circuit
-    circuitWithoutTraces = circuit.filter((item) => item.type !== "pcb_trace")
+    if (inputPath.toLowerCase().endsWith(".json")) {
+      // Read and parse the input circuit
+      const [circuitJson, readError] = await readFile(inputPath, "utf8")
+        .then((data) => [data, null] as const)
+        .catch((err) => [null, err] as const)
 
-    // Convert circuit to DSN and save to temp file
-    dsnPath = await convertAndSaveCircuitToDsn(circuitWithoutTraces)
-  } else {
-    throw new Error(`Unsupported file format for input file: ${inputPath}`)
-  }
+      if (readError) {
+        return [
+          null,
+          new Error(`Failed to read input file: ${readError.message}`),
+        ] as const
+      }
 
-  try {
+      let circuit: AnyCircuitElement[]
+      try {
+        circuit = JSON.parse(circuitJson!)
+      } catch (err: any) {
+        return [
+          null,
+          new Error(`Failed to parse circuit JSON: ${err.message}`),
+        ] as const
+      }
+
+      // Filter out any existing pcb_traces
+      circuitWithoutTraces = circuit.filter((item) => item.type !== "pcb_trace")
+
+      // Convert circuit to DSN and save to temp file
+      const [tempDsnPath, dsnError] = await convertAndSaveCircuitToDsn(
+        circuitWithoutTraces,
+      )
+        .then((path) => [path, null] as const)
+        .catch((err) => [null, err] as const)
+
+      if (dsnError) {
+        return [
+          null,
+          new Error(`Failed to convert circuit to DSN: ${dsnError.message}`),
+        ] as const
+      }
+      dsnPath = tempDsnPath!
+    } else {
+      dsnPath = inputPath
+    }
+
     // Run local freerouting
     debug(`Running freerouting on DSN file: ${dsnPath}`)
-    const routedDsn = await routeUsingLocalFreerouting({ inputPath: dsnPath })
+    const [routedDsn, routingError] = await routeUsingLocalFreerouting({
+      inputPath: dsnPath,
+    })
+      .then((result) => [result, null] as const)
+      .catch((err) => [null, err] as const)
 
-    // Read the original DSN file to get the PCB data
-    const originalDsnContent = await readFile(dsnPath, "utf8")
-    const pcbJson = parseDsnToDsnJson(originalDsnContent) as DsnPcb
+    if (routingError) {
+      return [
+        null,
+        new Error(`Freerouting failed: ${routingError.message}`),
+      ] as const
+    }
 
-    // Parse the routed DSN to get the session data
-    const sessionJson = parseDsnToDsnJson(routedDsn) as DsnSession
+    // Read the original DSN file
+    const [originalDsnContent, readError] = await readFile(dsnPath, "utf8")
+      .then((data) => [data, null] as const)
+      .catch((err) => [null, err] as const)
 
-    // Convert the routed DSN back to circuit JSON
+    if (readError) {
+      return [
+        null,
+        new Error(`Failed to read original DSN file: ${readError.message}`),
+      ] as const
+    }
+
+    let pcbJson: DsnPcb
+    let sessionJson: DsnSession
+    try {
+      pcbJson = parseDsnToDsnJson(originalDsnContent!) as DsnPcb
+      sessionJson = parseDsnToDsnJson(routedDsn!) as DsnSession
+    } catch (err: any) {
+      return [
+        null,
+        new Error(`Failed to parse DSN data: ${err.message}`),
+      ] as const
+    }
+
+    // Convert back to circuit JSON
     const routedTraces = convertDsnSessionToCircuitJson(pcbJson, sessionJson)
-
-    // Combine original circuit (without traces) with new traces
     const outputCircuit = circuitWithoutTraces
       ? [...circuitWithoutTraces, ...routedTraces]
       : routedTraces
 
-    // Write the routed circuit JSON to the outputs directory
+    // Create outputs directory
     const outputsDir = join(sampleDir, "outputs")
-    await mkdir(outputsDir, { recursive: true })
+    const [, mkdirError] = await mkdir(outputsDir, { recursive: true })
+      .then(() => [true, null] as const)
+      .catch((err) => [null, err] as const)
+
+    if (mkdirError) {
+      return [
+        null,
+        new Error(`Failed to create outputs directory: ${mkdirError.message}`),
+      ] as const
+    }
+
+    // Write output file
     const outputPath = join(outputsDir, "freerouting_routed_circuit.json")
-    await writeFile(outputPath, JSON.stringify(outputCircuit, null, 2))
+    const [, writeError] = await writeFile(
+      outputPath,
+      JSON.stringify(outputCircuit, null, 2),
+    )
+      .then(() => [true, null] as const)
+      .catch((err) => [null, err] as const)
+
+    if (writeError) {
+      return [
+        null,
+        new Error(`Failed to write output file: ${writeError.message}`),
+      ] as const
+    }
 
     debug(`Wrote routed circuit to: ${outputPath}`)
 
     // Clean up temporary DSN file
     if (!inputPath.toLowerCase().endsWith(".dsn")) {
-      await unlink(dsnPath)
-      debug(`Deleted temporary DSN file: ${dsnPath}`)
+      const [, unlinkError] = await unlink(dsnPath)
+        .then(() => [true, null] as const)
+        .catch((err) => [null, err] as const)
+
+      if (unlinkError) {
+        debug(
+          `Warning: Failed to delete temporary DSN file: ${unlinkError.message}`,
+        )
+      } else {
+        debug(`Deleted temporary DSN file: ${dsnPath}`)
+      }
     }
 
-    return outputPath
-  } catch (error) {
+    return [outputPath, null] as const
+  })()
+
+  if (error) {
     debug(`Error processing file ${inputPath}:`, error)
     throw error
   }
+
+  return result
 }

@@ -13,7 +13,11 @@ export async function convertAndSaveCircuitToDsn(
   const tempPath = tempyFile({ extension: "dsn" })
 
   // Write DSN file to temp location
-  await writeFile(tempPath, dsnContent)
+  await writeFile(tempPath, dsnContent).catch((err) => {
+    throw new Error(
+      `Failed to write DSN file to "${tempPath}". Original error: ${err.message}`,
+    )
+  })
 
   return tempPath
 }

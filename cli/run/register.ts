@@ -18,27 +18,22 @@ export const autorouterRunCommand = (program: Command) => {
       false,
     )
     .action(async (inputPath, options) => {
-      try {
-        if (!options.dataset && !inputPath.endsWith(".json")) {
-          console.error(
-            "Error: When not using --dataset flag, you must specify the path to an unrouted_circuit.json file",
-          )
-          console.error(
-            "Example: autorouting run -a freerouting path/to/sample/unrouted_circuit.json",
-          )
-          process.exit(1)
-        }
-
-        await runAutorouter({
-          inputPath,
-          autorouter: options.autorouter,
-          isDataset: options.dataset,
-          isLocal: options.local,
-        })
-        console.log("Successfully completed autorouting")
-      } catch (error) {
-        console.error("Failed to run autorouter:", error)
+      if (!options.dataset && !inputPath.endsWith(".json")) {
+        console.error(
+          "Error: When not using --dataset flag, you must specify the path to an unrouted_circuit.json file",
+        )
+        console.error(
+          "Example: autorouting run -a freerouting path/to/sample/unrouted_circuit.json",
+        )
         process.exit(1)
       }
+
+      await runAutorouter({
+        inputPath,
+        autorouter: options.autorouter,
+        isDataset: options.dataset,
+        isLocal: options.local,
+      })
+      console.log("Successfully completed autorouting")
     })
 }

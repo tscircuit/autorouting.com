@@ -24,49 +24,91 @@ export async function runAutorouter({
   serverUrl = "https://registry-api.tscircuit.com",
   isLocal = false,
 }: RunAutorouterOptions) {
-  if (autorouter !== "freerouting") {
-    throw new Error(`Unsupported autorouter: ${autorouter}`)
-  }
-  if (!isDataset) {
-    debug(`Processing single file: ${inputPath}`)
-    isLocal
-      ? await processCircuitFileLocally(inputPath)
-      : await processCircuitFile({ inputPath, autorouter, serverUrl })
-    return
-  }
-  debug(`Processing dataset: ${inputPath}`)
+  const [result, error] = await (async () => {
+    if (autorouter !== "freerouting") {
+      return [null, new Error(`Unsupported autorouter: ${autorouter}`)] as const
+    }
 
-  // Get all sample folders
-  const sampleFolders = await glob("sample*/", {
-    // Added trailing slash to match directories
-    cwd: inputPath,
-    absolute: true,
-  })
+    if (!isDataset) {
+      debug(`Processing single file: ${inputPath}`)
+      const [, processError] = await (isLocal
+        ? processCircuitFileLocally(inputPath)
+        : processCircuitFile({ inputPath, autorouter, serverUrl })
+      )
+        .then(() => [true, null] as const)
+        .catch((err) => [null, err] as const)
 
-  debug(`Found ${sampleFolders.length} sample folders`)
+      if (processError) {
+        return [
+          null,
+          new Error(`Failed to process circuit file: ${processError.message}`),
+        ] as const
+      }
+      return [true, null] as const
+    }
 
-  // Process each sample folder
-  for (const sampleFolder of sampleFolders) {
-    // Check if this sample folder has an unrouted_circuit.json
-    const unroutedCircuitPath = join(sampleFolder, "unrouted_circuit.json")
+    debug(`Processing dataset: ${inputPath}`)
 
-    try {
-      const stats = await stat(unroutedCircuitPath)
-      if (stats.isFile()) {
+    // Get all sample folders
+    const [sampleFolders, globError] = await glob("sample*/", {
+      cwd: inputPath,
+      absolute: true,
+    })
+      .then((folders) => [folders, null] as const)
+      .catch((err) => [null, err] as const)
+
+    if (globError) {
+      return [
+        null,
+        new Error(`Failed to list sample folders: ${globError.message}`),
+      ] as const
+    }
+
+    debug(`Found ${sampleFolders!.length} sample folders`)
+
+    // Process each sample folder
+    for (const sampleFolder of sampleFolders!) {
+      const unroutedCircuitPath = join(sampleFolder, "unrouted_circuit.json")
+
+      const [stats, statError] = await stat(unroutedCircuitPath)
+        .then((s) => [s, null] as const)
+        .catch((err) => [null, err] as const)
+
+      if (statError) {
+        debug(`Skipping ${sampleFolder} - no unrouted_circuit.json found`)
+        continue
+      }
+
+      if (stats!.isFile()) {
         debug(`Processing sample folder: ${sampleFolder}`)
 
-        // Process the circuit file
-        isLocal
-          ? await processCircuitFileLocally(unroutedCircuitPath)
-          : await processCircuitFile({
+        const [, processError] = await (isLocal
+          ? processCircuitFileLocally(unroutedCircuitPath)
+          : processCircuitFile({
               inputPath: unroutedCircuitPath,
               autorouter,
               serverUrl,
             })
+        )
+          .then(() => [true, null] as const)
+          .catch((err) => [null, err] as const)
+
+        if (processError) {
+          return [
+            null,
+            new Error(
+              `Failed to process sample ${sampleFolder}: ${processError.message}`,
+            ),
+          ] as const
+        }
       }
-    } catch (error) {
-      debug(`Skipping ${sampleFolder} - no unrouted_circuit.json found`)
-      continue
     }
+
+    return [true, null] as const
+  })()
+
+  if (error) {
+    debug(`Error running autorouter: ${error.message}`)
+    throw error
   }
 }
