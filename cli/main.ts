@@ -26,5 +26,3 @@ autorouterRunCommand(program)
 registerUploadDatasetCommand(program)
 
 program.parse(process.argv)
-
-// export { cliConfig }

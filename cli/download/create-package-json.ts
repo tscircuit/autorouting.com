@@ -11,5 +11,11 @@ export async function createPackageJson(
     name: `@autorouting/${author}.${datasetName}`,
   }
 
-  await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2))
+  await writeFile(packageJsonPath, JSON.stringify(packageJson, null, 2)).catch(
+    (err) => {
+      throw new Error(
+        `Failed to write package.json to "${packageJsonPath}". Original error: ${err.message}`,
+      )
+    },
+  )
 }

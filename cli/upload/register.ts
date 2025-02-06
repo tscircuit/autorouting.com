@@ -9,12 +9,7 @@ export const registerUploadDatasetCommand = (program: Command) => {
     .argument("<dataset-directory>", "Path to dataset directory")
     .description("Upload dataset routes solutions to the database")
     .action(async (datasetDirectory) => {
-      try {
-        await uploadDatasetOutputs({ datasetDirectory })
-        console.log("Successfully uploaded dataset outputs")
-      } catch (error) {
-        console.error("Failed to upload dataset outputs:", error)
-        process.exit(1)
-      }
+      await uploadDatasetOutputs({ datasetDirectory })
+      console.log("Successfully uploaded dataset outputs")
     })
 }
