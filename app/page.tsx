@@ -1,4 +1,4 @@
-import mainLogo from "/images/mainLogo.webp"
+import mainLogo from "/images/autorouting-header.png"
 import Image from "next/image.js"
 
 export default function Home() {
@@ -7,7 +7,11 @@ export default function Home() {
       <div className="container mx-auto max-w-2xl px-4 py-8 bg-white shadow-lg rounded-lg">
         <h1 className="text-4xl font-bold text-center mb-6">autorouting</h1>
         <div className="flex justify-center mb-6">
-          <Image alt="autorouting text logo" src={mainLogo} className="w-64" />
+          <Image
+            alt="autorouting text logo"
+            src={mainLogo}
+            className="w-full"
+          />
         </div>
         <p className="text-lg mb-4 text-gray-700">
           Autorouting is the process of drawing wires on a printed circuit board
