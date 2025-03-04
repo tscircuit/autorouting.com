@@ -43,7 +43,9 @@ it("POST /samples/create_bug_report should create a new sample with route data",
   expect(bugReportsDataset.sample_count).toBeGreaterThan(0)
 
   // Verify sample file was created with the route.json
-  const sampleId = res.bug_report.sample_url.match(/sample_id=([^&]+)/)[1]
+  const sampleId = (res as any).bug_report.sample_url.match(
+    /sample_id=([^&]+)/,
+  )[1]
   const fileRes: any = await testUserKy
     .get("samples/get_file", {
       searchParams: {

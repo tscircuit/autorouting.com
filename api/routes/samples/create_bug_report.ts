@@ -20,9 +20,9 @@ export default withRouteSpec({
   let dataset = db
     .getState()
     .datasets.find(
-      (d) => 
-        d.dataset_name === "bug-reports" && 
-        d.owner_name === ctx.auth.github_username
+      (d) =>
+        d.dataset_name === "bug-reports" &&
+        d.owner_name === ctx.auth.github_username,
     )
 
   if (!dataset) {
@@ -54,12 +54,12 @@ export default withRouteSpec({
   // Get highest sample number
   const samplesInDataset = db
     .getState()
-    .samples
-    .filter(s => s.dataset_id === dataset.dataset_id)
-  
-  const highestSampleNumber = samplesInDataset.length > 0
-    ? Math.max(...samplesInDataset.map(s => s.sample_number))
-    : 0
+    .samples.filter((s) => s.dataset_id === dataset.dataset_id)
+
+  const highestSampleNumber =
+    samplesInDataset.length > 0
+      ? Math.max(...samplesInDataset.map((s) => s.sample_number))
+      : 0
 
   // Create a new sample in the dataset
   const newSample = {
@@ -94,16 +94,20 @@ export default withRouteSpec({
 
   // Update the dataset's sample count
   db.setState((state) => {
-    const datasetToUpdate = state.datasets.find(d => d.dataset_id === dataset.dataset_id)
+    const datasetToUpdate = state.datasets.find(
+      (d) => d.dataset_id === dataset.dataset_id,
+    )
     if (datasetToUpdate) {
-      datasetToUpdate.sample_count = state.samples.filter(s => s.dataset_id === dataset.dataset_id).length
+      datasetToUpdate.sample_count = state.samples.filter(
+        (s) => s.dataset_id === dataset.dataset_id,
+      ).length
       datasetToUpdate.updated_at = new Date().toISOString()
     }
     return state
   })
 
-  const serverUrl = ctx.env?.SERVER_URL || "http://localhost:3091"
-  
+  const serverUrl = "http://localhost:3091"
+
   return ctx.json({
     bug_report: {
       sample_url: `${serverUrl}/samples/view_file?sample_id=${newSample.sample_id}&file_path=route.json`,
